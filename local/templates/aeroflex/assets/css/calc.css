@@ -125,6 +125,36 @@
   padding: 0.5em 0 !important
 }
 
+.calc .breadcrumbs__item {
+  margin-bottom: 22px;
+}
+
+.calc a.breadcrumbs__item {
+  padding-left: 24px;
+  font-size: 18px;
+  color: #423D3D;
+}
+
+.calc .breadcrumbs__item span {
+  color: #000;
+}
+.calc .breadcrumbs__item:before {
+  color: #000;
+  right: auto;
+  top: 2px;
+  transform: rotate(180deg);
+}
+/* .calc .breadcrumbs__item:after {
+  color: #000;
+  content: '→';
+} */
+.calc .firstScreen__title h1 {
+  color: #000;
+}
+.calc .breadcrumbs {
+  display: block;
+}
+
 .calc .radioButton {
   align-items: stretch
 }
