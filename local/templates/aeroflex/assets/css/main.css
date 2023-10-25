@@ -1519,6 +1519,31 @@ ul li:before {
 .calcBlock__button svg path {
     stroke: #000
 }
+
+/* .calc-type-item {
+  border: 2px solid #D9D9D9;
+} */
+.calc-type-item__link {
+  display: inline-block;
+  border: 2px solid #D9D9D9;
+  width: 100%;
+  margin-bottom: 32px;
+  padding: 22px 0;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.calc-type-item__link:hover {
+  border: 2px solid #FFD500;
+  background-color: #FFD500;
+}
+
+.calc-type-item__link .title {
+  text-transform: uppercase;
+  font-size: 22px;
+  line-height: 30px;
+}
+
 @media(max-width: 1170px) {
     .calcBlock__content {
         flex-wrap: wrap;
