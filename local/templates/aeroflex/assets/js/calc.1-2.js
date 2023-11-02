@@ -37,13 +37,15 @@ $(function() {
       const $calc = $('.calc');
 
       if ($(this).val()) {
-          console.log($(this).val())
           $calc.find('[name="diameter_in"]').val($(this).val());
           $calc.find('[name="diameter_out"]').val($(this).find('option:selected').data('dh'));
           $calc.find('[name="diameter_in"], [name="diameter_out"]').prop('readonly', true);
           console.log($('[name="diameter_in"]').val())
           console.log($('[name="diameter_out"]').val())
           $calc.find($('[name="pipe-width"]')).val(($('[name="diameter_out"]').val() - $('[name="diameter_in"]').val()) / 2)
+          $calc.find('[name="diameter_in"]').removeClass('error')
+          $calc.find('[name="diameter_out"]').removeClass('error')
+          $calc.find($('[name="pipe-width"]')).removeClass('error')
 
       } else {
           $calc.find('[name="diameter_in"], [name="diameter_out"]').prop('readonly', false);
@@ -75,11 +77,12 @@ $(function() {
   $('[name="material-insulting"]').on('change', function() {
     const $calc = $('.calc');
 
-    console.log($(this).val())
     if ($(this).val() === 'water') {
 
       $calc.find($('[name="coolant-density"]')).val(1000)
       $calc.find($('[name="coolant-heat-capacity"]')).val(4.187)
+      $calc.find($('[name="coolant-density"]')).removeClass('error')
+      $calc.find($('[name="coolant-heat-capacity"]')).removeClass('error')
       $calc.find('[name="coolant-density"], [name="coolant-heat-capacity"]').prop('readonly', true);
     } else {
       $calc.find($('[name="coolant-density"]')).val('')
@@ -105,10 +108,8 @@ $(function() {
       let
           $calc = $('.calc_test'),
           $region_select = $calc.find('[name="region"]').closest('.calc__select'),
-          $region = $calc.find('[name="region"] option:selected'),
-          indoor = $calc.find('input[name="indoor"]:checked').val(),
-          $temperatureOut = $calc.find('.temperature_out'),
-          hours = $calc.find('input[name="hours"]:checked').val();
+          $region = $calc.find('[name="region"] option:selected');
+      
 
       $calc.find('.calc__result').removeClass('active');
 
@@ -116,13 +117,6 @@ $(function() {
           $region_select.addClass('error');
       } else {
           $region_select.removeClass('error');
-      }
-
-      $temperatureOut.prop('readonly', true);
-      $temperatureOut.val(hours === 'heat' ? $region.data('heat') : $region.data('temperature'));
-      if (indoor === 'close') {
-          $temperatureOut.val(20);
-          $temperatureOut.prop('readonly', false);
       }
   });
 
@@ -132,27 +126,74 @@ $(function() {
           $region = $calc.find('[name="region"] option:selected'),
           $position = $calc.find('[name="position"]:checked'),
           $indoor = $calc.find('[name="indoor"]:checked'),
-          $hours = $calc.find('[name="hours"]:checked'),
           $flat = $calc.find('[name="flat"]:checked'),
           $diameter_in = $calc.find('[name="diameter_in"]'),
           $diameter_out = $calc.find('[name="diameter_out"]'),
-          $temperatureIn = $calc.find('.temperature_in'),
           $temperatureOut = $calc.find('.temperature_out'),
           $material = $calc.find('[name="material"] option:selected'),
           $pipe = $calc.find('[name="pipe"] option:selected'),
           $result = $calc.find('.calc__result'),
           $approx = $calc.find('.approx'),
           $heat_coefficient = $calc.find('[name="heat_coefficient"]'),
-          $density = $calc.find('[name="density"]');
-
+          $pipeWidth = $calc.find('[name="pipe-width"]'),
+          $pipeMaterialDensity = $calc.find('[name="pipe-material-density"]'),
+          $materialHeatCapacity = $calc.find('[name="material-heat-capacity"]'),
+          $heatCoefficientAdditionsLosses = $calc.find('[name="heat-coefficient-additions-losses"]'),
+          $startCarrierTemperature = $calc.find('[name="start-carrier-temperature"]'),
+          $startCoolantFrostTemperature = $calc.find('[name="start-coolant-frost-temperature"]'),
+          $permissibleIceContent = $calc.find('[name="permissible-ice-content"]'),
+          $coolantDensity = $calc.find('[name="coolant-density"]'),
+          $coolantHeatCapacity = $calc.find('[name="coolant-heat-capacity"]'),
+          $stopTime = $calc.find('[name="stop-time"]');
+          console.log('parseFloat($heat_coefficient.v', parseFloat($heat_coefficient.val()))
       $approx.closest('.calc__row').addClass('hidden');
 
       $heat_coefficient.attr('placeholder', '');
-      $density.attr('placeholder', '');
+      //$density.attr('placeholder', '');
 
       if (isNaN(parseFloat($region.data('heat')))) {
           $region.closest('.calc__select').addClass('error');
           return;
+      }
+
+      if (isNaN(parseFloat($pipeWidth.val()))) {
+        $pipeWidth.addClass('error');
+      }
+
+      if (isNaN(parseFloat($diameter_in.val()))) {
+        $diameter_in.addClass('error');
+      }
+
+      if (isNaN(parseFloat($diameter_out.val()))) {
+        $diameter_out.addClass('error');
+      }
+
+      if (isNaN(parseFloat($temperatureOut.val()))) {
+        $temperatureOut.addClass('error');
+      }
+
+      if (isNaN(parseFloat($stopTime.val()))) {
+        $stopTime.addClass('error');
+      }
+
+      if (isNaN(parseFloat($coolantHeatCapacity.val()))) {
+        $coolantHeatCapacity.addClass('error');
+      }
+
+      if (isNaN(parseFloat($coolantDensity.val()))) {
+        $coolantDensity.addClass('error');
+      }
+
+      if (isNaN(parseFloat($permissibleIceContent.val()))) {
+        $permissibleIceContent.addClass('error');
+      }
+
+      if (isNaN(parseFloat($startCoolantFrostTemperature.val()))) {
+        $startCoolantFrostTemperature.addClass('error');
+      }
+
+      if (isNaN(parseFloat($startCarrierTemperature.val()))) {
+        $startCarrierTemperature.addClass('error');
       }
 
       // Main
@@ -160,30 +201,39 @@ $(function() {
           material = parseInt($material.val(), 10),
           diameterIn = parseFloat($diameter_in.val().replace(/,/, '.')),
           diameterOut = parseFloat($diameter_out.val().replace(/,/, '.')),
-          temperatureIn = parseFloat($temperatureIn.val().replace(/,/, '.')),
           temperatureOut = parseFloat($temperatureOut.val().replace(/,/, '.')),
           isIndoor = $indoor.val() === 'close',
           isFlat = $flat.val() === 'flat',
           isVertical = $position.val() === 'vertical',
           region = $region.data('type'),
-          hours = $hours.val() === 'heat' ? parseFloat($region.data('heat_days')) * 24 : parseFloat($hours.val()),
-          emission = parseInt($pipe.val(), 10);
+          emission = parseInt($pipe.val(), 10),
+          pipeWidth = parseFloat($pipeWidth.val().replace(/,/, '.')),
+          pipeMaterialDensity = parseFloat($pipeMaterialDensity.val().replace(/,/, '.')),
+          materialHeatCapacity = parseFloat($materialHeatCapacity.val().replace(/,/, '.')),
+          heatCoefficientAdditionsLosses = parseFloat($heatCoefficientAdditionsLosses.val().replace(/,/, '.')),
+          startCarrierTemperature = parseFloat($startCarrierTemperature.val().replace(/,/, '.')),
+          startCoolantFrostTemperature = parseFloat($startCoolantFrostTemperature.val().replace(/,/, '.')),
+          permissibleIceContent = parseFloat($permissibleIceContent.val().replace(/,/, '.')),
+          coolantDensity = parseFloat($coolantDensity.val().replace(/,/, '.')),
+          coolantHeatCapacity = parseFloat($coolantHeatCapacity.val().replace(/,/, '.')),
+          stopTime = parseFloat($stopTime.val().replace(/,/, '.'));
+
 
       AeroflexCalc.init();
 
       $heat_coefficient.attr('placeholder', AeroflexCalc.getThermalLossCoefficient(isFlat, isVertical, isIndoor, emission));
-
+      console.log()
       // Extended
       const
-          heat_coefficient = parseFloat($heat_coefficient.val().replace(/,/, '.')),
-          density = parseFloat($density.val().replace(/,/, '.'));
-
+          heat_coefficient = parseFloat($heat_coefficient.val().replace(/,/, '.'));
+          // density = parseFloat($density.val().replace(/,/, '.'));
+        
       AeroflexCalc.init({
-          heat_coefficient,
-          density
+          heat_coefficient
+          // density
       });
 
-      $density.attr('placeholder', AeroflexCalc.getSurfaceHeatFlowDensity(diameterIn, temperatureIn, isIndoor, hours, isFlat, region).toFixed(4))
+      //$density.attr('placeholder', AeroflexCalc.getSurfaceHeatFlowDensity(diameterIn, temperatureIn, isIndoor, hours, isFlat, region).toFixed(4))
 
       if (isNaN(diameterIn)) {
           $diameter_in.addClass('error');
@@ -193,22 +243,39 @@ $(function() {
           $diameter_out.addClass('error');
       }
 
-      if (isNaN(temperatureIn)) {
-          $temperatureIn.addClass('error');
-      }
-
       if (isNaN(temperatureOut)) {
           $temperatureOut.addClass('error');
       }
-
+      
+      
       if (!$calc.find('.error').length && typeof AeroflexCalc !== 'undefined') {
           let
-              depth = AeroflexCalc.getSurfaceHeatFlowDepth(material, diameterIn, diameterOut, temperatureIn, temperatureOut, isIndoor, isFlat, isVertical, region, hours, emission);
+              depth = AeroflexCalc.getInsulationDepthForLiquidFrost(
+                material,
+                diameterIn,
+                diameterOut,
+                temperatureOut,
+                isIndoor,
+                isFlat,
+                isVertical,
+                region,
+                emission,
+                pipeWidth,
+                pipeMaterialDensity,
+                materialHeatCapacity,
+                heatCoefficientAdditionsLosses,
+                startCarrierTemperature,
+                startCoolantFrostTemperature,
+                permissibleIceContent,
+                coolantDensity,
+                coolantHeatCapacity,
+                stopTime
+              );
 
           $result.addClass('active');
 
           $('.calc__result').addClass('active');
-          $('.otvet').val(temperatureIn < 0 ? 'По вопросам - calc@aeroflex-russia.ru' : depth.toFixed(2));
+          $('.otvet').val(!depth ? 'По вопросам - calc@aeroflex-russia.ru' : depth.toFixed(2));
       }
   });
 });

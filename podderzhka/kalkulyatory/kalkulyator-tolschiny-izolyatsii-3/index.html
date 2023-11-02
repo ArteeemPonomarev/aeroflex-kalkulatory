@@ -786,14 +786,14 @@
               <div class="calc__row">
                 <div class="calc__col"><span>Влажность окружающего воздуха, %</span></div>
                 <div class="calc__col">
-                  <input type="text" class="input _inputAttr temperature_out">
+                  <input type="text" name="humidity_out"  class="input _inputAttr">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Температура "точки росы", °С</span></div>
                 <div class="calc__col">
-                  <input type="text" class="input _inputAttr temperature_out">
+                  <input type="text" name="dew-point-temperature" readonly class="input _inputAttr">
                 </div>
               </div>
 
@@ -1042,7 +1042,7 @@
     defer></script>
   <script type="text/javascript" src="../../../local/templates/aeroflex/assets/lib/select2/js/i18n/ru.js"
     defer></script>
-  <script type="text/javascript" src="../../../local/templates/aeroflex/assets/js/calc.1.js" defer></script>
+  <script type="text/javascript" src="../../../local/templates/aeroflex/assets/js/calc.1-3.js" defer></script>
   <script src="https://cdn.callibri.ru/callibri.js" type="text/javascript" charset="utf-8"></script>
   <script>
     $('.product__button._order').on('click', function () { track('order_button') });

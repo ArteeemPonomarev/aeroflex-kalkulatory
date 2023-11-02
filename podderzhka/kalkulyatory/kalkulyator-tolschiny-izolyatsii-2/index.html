@@ -2190,7 +2190,7 @@
               <div class="calc__row">
                 <div class="calc__col"><span>Толщина стенки трубопровода, мм</span></div>
                 <div class="calc__col">
-                  <input type="text" name="pipe-width" placeholder="3" readonly class="input _inputAttr temperature_in">
+                  <input type="text" name="pipe-width" placeholder="3" readonly class="input _inputAttr">
                 </div>
               </div>
 
@@ -2219,12 +2219,12 @@
                   <div class="calc__select">
                     <select class="js-select-single" name="material-heat-capacity" id="material-heat-capacity">
                       <option value="1.55" selected>ПНД (PE)</option>
-                      <option value="0">Непластифицированный ПВХ (PVC-U)</option>
+                      <option value="0.88">Непластифицированный ПВХ (PVC-U)</option>
                       <option value="1.73">ПП (PP-…)</option>
                       <option value="2.3">Сшитый ПЭ (PE-X)</option>
-                      <option value="0">Полибутен (PB)</option>
-                      <option value="0">Хлорированный ПВХ (PVC-C)</option>
-                      <option value="0">Полиэтилен повышенной термостойкости (PE-RT)</option>
+                      <option value="1.9">Полибутен (PB)</option>
+                      <option value="0.88">Хлорированный ПВХ (PVC-C)</option>
+                      <option value="1.55">Полиэтилен повышенной термостойкости (PE-RT)</option>
                       <option value="0.468">Теплоемкость стали</option>
                       <option value="0.532">Теплоемкость титана</option>
                     </select>
@@ -2236,9 +2236,6 @@
                 <div class="calc__col">
                   <span>Коэффициент дополнительных тепловых потерь K</span>
                 </div>
-                <!-- <div class="calc__col">
-                  <input type="text" name="heat-coefficient-additions-losses" placeholder="" class="input" value="">
-                </div> -->
                 <div class="calc__col">
                   <div class="calc__select">
                     <select class="js-select-single" name="heat-coefficient-additions-losses" id="heat-coefficient-additions-losses">
@@ -2258,11 +2255,11 @@
                 <div class="calc__col"><span>Вид теплоносителя</span></div>
                 <div class="calc__col">
                   <div class="radioButton">
-                    <input type="radio" id="material-insulating_1" checked="checked" name="material-insulting" value="water" required>
+                    <input type="radio" id="material-insulating_1"  name="material-insulting" value="water" required>
                     <label for="material-insulating_1"><span>Вода</span></label>
                   </div>
                   <div class="radioButton">
-                    <input type="radio" id="material-insulating_2" name="material-insulting" value="other">
+                    <input type="radio" id="material-insulating_2" checked="checked" name="material-insulting" value="other">
                     <label for="material-insulating_2"><span>Другое</span></label>
                   </div>
                 </div>
@@ -2329,8 +2326,18 @@
                 </div>
               </div>
 
-              
-
+              <div class="calc__row">
+                <div class="calc__col"><span>Изоляционный материал</span></div>
+                <div class="calc__col">
+                  <div class="calc__select">
+                    <select class="js-select-single" name="material" id="material">
+                      <option value="0" selected>Aeroflex EPDM</option>
+                      <option value="1">Aeroflex EPDM HT</option>
+                      <option value="2">Aeroflex FIRO</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
               
 
               <div class="calc__row">

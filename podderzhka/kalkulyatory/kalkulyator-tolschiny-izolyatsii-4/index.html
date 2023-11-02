@@ -460,11 +460,11 @@
                 <div class="calc__col"><span>Вид газохода</span></div>
                 <div class="calc__col">
                   <div class="radioButton">
-                    <input type="radio" id="gas-pipe-type_1" checked="checked" name="gas-pipe-type" value="circle" required>
+                    <input type="radio" id="gas-pipe-type_1" name="gas-pipe-type" value="circle" required>
                     <label for="gas-pipe-type_1"><span>Круглый</span></label>
                   </div>
                   <div class="radioButton">
-                    <input type="radio" id="gas-pipe-type_2" name="gas-pipe-type" value="rectangular">
+                    <input type="radio" id="gas-pipe-type_2" checked="checked" name="gas-pipe-type" value="rectangular">
                     <label for="gas-pipe-type_2"><span>Прямоугольный</span></label>
                   </div>
                 </div>
@@ -501,7 +501,7 @@
               <div class="calc__row">
                 <div class="calc__col"><span>Толщина стенки газохода, мм</span></div>
                 <div class="calc__col">
-                  <input type="text" name="gas-pipe-diameter" placeholder="3" class="input _inputAttr">
+                  <input type="text" name="gas-pipe-depth" placeholder="3" class="input _inputAttr">
                 </div>
               </div>
 
@@ -536,56 +536,63 @@
               <div class="calc__row">
                 <div class="calc__col"><span>Температура окружающего воздуха, °С</span></div>
                 <div class="calc__col">
-                  <input type="text" placeholder="3" class="input _inputAttr">
+                  <input type="text" placeholder="3" class="input _inputAttr temperature_out">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Температура транспортируемого газа(теплоносителя), °С</span></div>
                 <div class="calc__col">
-                  <input type="text" placeholder="3" class="input _inputAttr">
+                  <input type="text" name="gas-moving-temperature" placeholder="3" class="input _inputAttr">
+                </div>
+              </div>
+
+              <div class="calc__row">
+                <div class="calc__col"><span>Влажность транспортируемого газа, %</span></div>
+                <div class="calc__col">
+                  <input type="text" name="gas-moving-humidity"  class="input _inputAttr">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Температура "точки росы", °С</span></div>
                 <div class="calc__col">
-                  <input type="text" class="input _inputAttr">
+                  <input type="text" name="dew-point-temperature" class="input _inputAttr">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Скорость движения газа(теплоносителя), м/с</span></div>
                 <div class="calc__col">
-                  <input type="text" class="input _inputAttr temperature_out">
+                  <input type="text" name="gas-speed" class="input _inputAttr temperature_out">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Теплопроводность газа(теплоносителя), λ·10<sup>2</sup>, Вт/(м·С)</span></div>
                 <div class="calc__col">
-                  <input type="text" class="input _inputAttr temperature_out">
+                  <input type="text" name="gas-thermal-conductivity" class="input _inputAttr temperature_out">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Кинематическая вязкость газа(теплоносителя), v·10<sup>6</sup>, м<sup>2</sup>/с</span></div>
                 <div class="calc__col">
-                  <input type="text" class="input _inputAttr temperature_out">
+                  <input type="text" name="gas-kinematic-viscosity" class="input _inputAttr temperature_out">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Температуропроводность газа(теплоносителя), a·10<sup>6</sup>, м<sup>2</sup>/с</span></div>
                 <div class="calc__col">
-                  <input type="text" class="input _inputAttr temperature_out">
+                  <input type="text" name="gas-thermal-diffusivity" class="input _inputAttr temperature_out">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Коэффициент теплоотдачи внутренней поверхности стенки изолируемого объекта, αвн, (Вт/м<sup>2</sup>·С)</span></div>
                 <div class="calc__col">
-                  <input type="text" class="input _inputAttr temperature_out">
+                  <input type="text" name="heat-transfer-coefficient" class="input _inputAttr temperature_out">
                 </div>
               </div>
 
@@ -623,14 +630,14 @@
                 </div>
               </div>
 
-              <!-- <div class="calc__row">
+              <div class="calc__row">
                 <div class="calc__col">
                   <span>Коэффициент конвективной теплоотдачи от наружной поверхности, α</span>
                 </div>
                 <div class="calc__col">
                   <input type="text" name="heat_coefficient" placeholder="" class="input" value="">
                 </div>
-              </div> -->
+              </div>
 
             </div>
             <div class="calc__button btn _result">Рассчитать</div>
@@ -834,7 +841,7 @@
     defer></script>
   <script type="text/javascript" src="../../../local/templates/aeroflex/assets/lib/select2/js/i18n/ru.js"
     defer></script>
-  <script type="text/javascript" src="../../../local/templates/aeroflex/assets/js/calc.1.js" defer></script>
+  <script type="text/javascript" src="../../../local/templates/aeroflex/assets/js/calc.1-4.js" defer></script>
   <script src="https://cdn.callibri.ru/callibri.js" type="text/javascript" charset="utf-8"></script>
   <script>
     $('.product__button._order').on('click', function () { track('order_button') });

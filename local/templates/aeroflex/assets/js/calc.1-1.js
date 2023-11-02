@@ -65,7 +65,7 @@ $(function() {
           $region = $calc.find('[name="region"] option:selected'),
           indoor = $calc.find('input[name="indoor"]:checked').val(),
           $temperatureOut = $calc.find('.temperature_out');
-          // hours = $calc.find('input[name="hours"]:checked').val();
+          
 
       $calc.find('.calc__result').removeClass('active');
 
@@ -74,13 +74,6 @@ $(function() {
       } else {
           $region_select.removeClass('error');
       }
-
-      // $temperatureOut.prop('readonly', true);
-      // $temperatureOut.val(hours === 'heat' ? $region.data('heat') : $region.data('temperature'));
-      // if (indoor === 'close') {
-      //     $temperatureOut.val(20);
-      //     $temperatureOut.prop('readonly', false);
-      // }
   });
 
   $('.calc_test ._result').on('click', function () {
@@ -157,15 +150,11 @@ $(function() {
       if (isNaN(temperatureOut)) {
           $temperatureOut.addClass('error');
       }
-      console.log('error', $calc.find('.error'))
-      console.log('AeroflexCalc', typeof AeroflexCalc !== 'undefined')
-      console.log(!$calc.find('.error').length && typeof AeroflexCalc !== 'undefined')
+
 
       if (!$calc.find('.error').length && typeof AeroflexCalc !== 'undefined') {
-        console.log('conditional')
-        console.log(AeroflexCalc)
+        
         let depth = AeroflexCalc.getInsulationDepthWithSurfaceTemperature(material, diameterIn, diameterOut, temperatureIn, temperatureOut, isIndoor, isFlat, isVertical, region, emission, surfaceInsulationTemperature);
-        console.log('depth', depth)
           $result.addClass('active');
 
           $('.calc__result').addClass('active');
