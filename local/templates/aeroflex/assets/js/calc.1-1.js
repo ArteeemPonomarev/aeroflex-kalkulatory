@@ -24,6 +24,47 @@ $(function() {
       $(window).trigger('calc_changes');
   });
 
+  $('[name="region"]').on('change', function () {
+    const $calc = $('.calc');
+    const $indoor = $calc.find('[name="indoor"]:checked');
+
+    if ($indoor.val() === 'open') {
+      $temperature = $calc.find('[name="region"] option:selected').data('temperature');
+      console.log($temperature);
+      $calc.find('.temperature_out').val($temperature);
+      $calc.find('.temperature_out').prop('readonly', true);
+    }
+  });
+
+  $('[name="indoor"]').on('change', function () {
+    const $calc = $('.calc');
+    const $indoor = $calc.find('[name="indoor"]:checked');
+    const $temperature = $calc.find('[name="region"] option:selected').data('temperature');
+    const $surfaceInsulationTemperature = $calc.find('.surface_insulation_temperature');
+    const $pipe = $calc.find('[name="pipe"] option:selected').data('material'); // material or no-material
+    
+    $('.surface_insulation_temperature').trigger('change');
+  
+    if ($indoor.val() === 'open') {
+      $calc.find('.temperature_out').val($temperature);
+      $calc.find('.temperature_out').prop('readonly', true);
+      console.log($pipe);
+      if ($pipe === 'metal') {
+        $surfaceInsulationTemperature.val('55');
+      };
+      if ($pipe === 'no-metal') {
+        $surfaceInsulationTemperature.val('60');
+      }
+    } 
+
+    if ($indoor.val() === 'close') {
+      $calc.find('.temperature_out').val('20');
+      $calc.find('.temperature_out').prop('readonly', false);
+      $surfaceInsulationTemperature.val('40');
+    }
+  });
+
+
   $('[name="diameter_type"]').on('change', function() {
       $('#diameter option').prop('disabled', true);
       $('#diameter optgroup').prop('disabled', true);
@@ -57,6 +98,62 @@ $(function() {
           $('[name="diameter"]').trigger('change');
       }
   });
+
+  $('[name="pipe"]').on('change', function () {
+    const $calc = $('.calc');
+    const $indoor = $calc.find('[name="indoor"]:checked');
+    const $surfaceInsulationTemperature = $calc.find('.surface_insulation_temperature');
+    const currentPipeMaterial = $(this).find('option:selected').data('material');
+
+    $('.surface_insulation_temperature').trigger('change');
+
+    if (currentPipeMaterial === 'metal') {
+      if($indoor.val() === 'open') {
+        $surfaceInsulationTemperature.val('55')
+      }
+    }
+
+    if (currentPipeMaterial === 'no-metal') {
+      if($indoor.val() === 'open') {
+        $surfaceInsulationTemperature.val('60')
+      }
+    }
+  });
+
+  $('.surface_insulation_temperature').on('change', function () {
+    const $calc = $('.calc');
+    const $surfaceInsulationTemperature = $calc.find('.surface_insulation_temperature');
+    const $pipe = $calc.find('[name="pipe"] option:selected');
+    const surfaceInsulationTemperature = parseFloat($surfaceInsulationTemperature.val().replace(/,/, '.'));
+    const $indoor = $calc.find('[name="indoor"]:checked');
+    const isIndoor = $indoor.val() === 'close';
+    const isPipeMetal = $pipe.data('material') === 'metal';
+
+    const errorMessage = () => {
+      if (isIndoor && surfaceInsulationTemperature > 40) {
+        return `Максимальная температура поверхности с указанными параметрами 40 ºС`
+      }
+
+      if (!isIndoor && isPipeMetal && surfaceInsulationTemperature > 55) {
+        return `Максимальная температура поверхности с указанными параметрами 55 ºС`
+      }
+
+      if (!isIndoor && !isPipeMetal && surfaceInsulationTemperature > 60) {
+        return `Максимальная температура поверхности с указанными параметрами 60 ºС`
+      }
+    }
+
+    if (errorMessage()) {
+      $surfaceInsulationTemperature.addClass('error');
+      $('.surface_insulation_temperature__error').text(errorMessage());
+    }
+
+    if (!errorMessage()) {
+      $surfaceInsulationTemperature.removeClass('error');
+      $('.surface_insulation_temperature__error').text('');
+    }
+  })
+
 
   $(window).on('calc_changes', function () {
       let
@@ -115,7 +212,6 @@ $(function() {
           isFlat = $flat.val() === 'flat',
           isVertical = $position.val() === 'vertical',
           region = $region.data('type'),
-          //hours = $hours.val() === 'heat' ? parseFloat($region.data('heat_days')) * 24 : parseFloat($hours.val()),
           emission = parseInt($pipe.val(), 10),
           surfaceInsulationTemperature = parseFloat($surfaceInsulationTemperature.val().replace(/,/, '.'));
       AeroflexCalc.init();
@@ -131,6 +227,22 @@ $(function() {
           heat_coefficient
       });
 
+      const errorMessage = () => {
+        const isPipeMetal = $pipe.data('material') === 'metal';
+
+        if (isIndoor && surfaceInsulationTemperature > 40) {
+          return `Максимальная температура поверхности с указанными параметрами 40 ºС`
+        }
+
+        if (!isIndoor && isPipeMetal && surfaceInsulationTemperature > 55) {
+          return `Максимальная температура поверхности с указанными параметрами 55 ºС`
+        }
+
+        if (!isIndoor && !isPipeMetal && surfaceInsulationTemperature > 60) {
+          return `Максимальная температура поверхности с указанными параметрами 60 ºС`
+        }
+      }
+
       //$density.attr('placeholder', AeroflexCalc.getSurfaceHeatFlowDensity(diameterIn, temperatureIn, isIndoor, hours, isFlat, region).toFixed(4))
       if (!isFlat) {
         if (isNaN(diameterIn)) {
@@ -142,13 +254,17 @@ $(function() {
         }
       } 
       
-
       if (isNaN(temperatureIn)) {
           $temperatureIn.addClass('error');
       }
 
       if (isNaN(temperatureOut)) {
           $temperatureOut.addClass('error');
+      } 
+
+      if (errorMessage()) {
+        $surfaceInsulationTemperature.addClass('error');
+        $('.surface_insulation_temperature__error').text(errorMessage());
       }
 
 
@@ -158,7 +274,7 @@ $(function() {
           $result.addClass('active');
 
           $('.calc__result').addClass('active');
-          $('.otvet').val(depth.toFixed(2));
+          $('.otvet').val(errorMessage() ? 'По вопросам - calc@aeroflex-russia.ru' : depth.toFixed(2));
       }
   });
 });

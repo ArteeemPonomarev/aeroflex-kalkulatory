@@ -190,6 +190,11 @@
   color: #000;
   margin-bottom: 0
 }
+.calc__col_error {
+  margin-top: 16px;
+  line-height: 20px;
+  color: red;
+}
 
 .calc__col .input[readonly] {
   cursor: not-allowed;
