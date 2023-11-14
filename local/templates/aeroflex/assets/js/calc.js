@@ -2518,7 +2518,7 @@ var AeroflexCalc = {
   },
 
   getInsulationDepthWithoutPipesSettings: function (surfaceInsulationTemperature, isFlat, isVertical, isIndoor, emission, material, temperatureIn, temperatureOut) {
-    const topArg = this.getThermalConductivityCoefficient(material) * (temperatureIn - surfaceInsulationTemperature)
+    const topArg = Number(this.getThermalConductivityByMaterial(material, temperatureIn, temperatureOut).toFixed(4)) * (temperatureIn - surfaceInsulationTemperature)
     const bottomArg = this.getThermalLossCoefficient(isFlat, isVertical, isIndoor, emission) * (surfaceInsulationTemperature - temperatureOut)
     
     return 1000 * (topArg / bottomArg)
