@@ -112,10 +112,10 @@ var AeroflexCalc = {
   ],
 
   conductivity: [
-    // [0.0354, 0.00011], // EPDM
-    [0.0351, 0.00011],
+    [0.0354, 0.00011], //EPDM
     [0.0337, 0.00010], // EPDM HT
-    [0.0340, 0.00010]  // FIRO
+    [0.0320, 0.00010]  // FIRO
+
     // [0.044, 0.00011], // EPDM
     // [0.0415, 0.00010], // EPDM HT
     // [0.0398, 0.00010]  // FIRO
@@ -2520,28 +2520,30 @@ var AeroflexCalc = {
   getInsulationDepthWithoutPipesSettings: function (surfaceInsulationTemperature, isFlat, isVertical, isIndoor, emission, material, temperatureIn, temperatureOut) {
     const topArg = this.getThermalConductivityCoefficient(material) * (temperatureIn - surfaceInsulationTemperature)
     const bottomArg = this.getThermalLossCoefficient(isFlat, isVertical, isIndoor, emission) * (surfaceInsulationTemperature - temperatureOut)
-
+    
     return 1000 * (topArg / bottomArg)
   },
 
 
   getInsulationDepthWithPipesSettings: function (material, diameterIn, diameterOut, temperatureIn, temperatureOut, isIndoor, isFlat, isVertical, region, emission, surfaceInsulationTemperature) {
-    let k = 0.0001
-
+    const density = ((temperatureIn - surfaceInsulationTemperature) / (surfaceInsulationTemperature - temperatureOut) / 1000)
+    
+    let k = Number(density.toFixed(3));
+    
     while (true) {
       const RnL = 1 / (3.14 * ((diameterOut / 1000) + 2 * k) * this.getThermalLossCoefficient(isFlat, isVertical, isIndoor, emission))
 
-      const LnB = 2 * 3.14 * this.getThermalConductivityCoefficient(material) * RnL * ((temperatureIn - surfaceInsulationTemperature) / (surfaceInsulationTemperature - temperatureOut))
+      const LnB = 2 * 3.14 * Number(this.getThermalConductivityByMaterial(material, temperatureIn, temperatureOut).toFixed(4)) * RnL * ((temperatureIn - surfaceInsulationTemperature) / (surfaceInsulationTemperature - temperatureOut))
 
       const B = Math.pow(2.71828, LnB)
 
       const insulationDepth = (diameterOut / 1000) * (B - 1) / 2
-
-      if (k > insulationDepth) {
+   
+      if (insulationDepth - density >= 0) {
         return insulationDepth * 1000
       }
 
-      k += 0.00001
+      k += 0.0001;
     }
   },
 

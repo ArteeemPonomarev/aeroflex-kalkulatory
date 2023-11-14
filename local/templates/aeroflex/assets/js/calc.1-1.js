@@ -274,7 +274,7 @@ $(function() {
           $result.addClass('active');
 
           $('.calc__result').addClass('active');
-          $('.otvet').val(errorMessage() ? 'По вопросам - calc@aeroflex-russia.ru' : depth.toFixed(2));
+          $('.otvet').val(errorMessage() ? 'По вопросам - calc@aeroflex-russia.ru' : Math.round(depth));
       }
   });
 });
