@@ -2527,23 +2527,21 @@ var AeroflexCalc = {
 
   getInsulationDepthWithPipesSettings: function (material, diameterIn, diameterOut, temperatureIn, temperatureOut, isIndoor, isFlat, isVertical, region, emission, surfaceInsulationTemperature) {
     const density = ((temperatureIn - surfaceInsulationTemperature) / (surfaceInsulationTemperature - temperatureOut) / 1000)
-    
     let k = Number(density.toFixed(3));
-    
-    while (true) {
-      const RnL = 1 / (3.14 * ((diameterOut / 1000) + 2 * k) * this.getThermalLossCoefficient(isFlat, isVertical, isIndoor, emission))
-
-      const LnB = 2 * 3.14 * Number(this.getThermalConductivityByMaterial(material, temperatureIn, temperatureOut).toFixed(4)) * RnL * ((temperatureIn - surfaceInsulationTemperature) / (surfaceInsulationTemperature - temperatureOut))
-
-      const B = Math.pow(2.71828, LnB)
-
-      const insulationDepth = (diameterOut / 1000) * (B - 1) / 2
    
-      if (insulationDepth - density >= 0) {
-        return insulationDepth * 1000
+    const thermalLossCoefficient = this.getThermalLossCoefficient(isFlat, isVertical, isIndoor, emission)
+
+    while (true) {
+
+      const LnDiameter = Math.log(((diameterOut / 1000) + 2 * k) / (diameterOut / 1000))
+      const insulationDepth = (LnDiameter * thermalLossCoefficient * ((diameterOut / 1000) + 2 * k)) / (2 * Number(this.getThermalConductivityByMaterial(material, temperatureIn, temperatureOut).toFixed(4)))
+      
+      if ((insulationDepth / 1000) - density >= 0) {
+        console.log('insulationDepth ', insulationDepth)
+        return k * 1000
       }
 
-      k += 0.0001;
+      k += 0.001;
     }
   },
 
