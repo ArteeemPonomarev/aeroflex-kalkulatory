@@ -131,7 +131,27 @@ $(function() {
       });
 
       //$density.attr('placeholder', AeroflexCalc.getSurfaceHeatFlowDensity(diameterIn, temperatureIn, isIndoor, hours, isFlat, region).toFixed(4))
+      if (!isFlat) {
+        if (isNaN(diameterIn)) {
+          $diameter_in.addClass('error');
+        }
 
+        if (isNaN(diameterOut)) {
+          $diameter_out.addClass('error');
+        }
+      } 
+
+      if (isNaN(temperatureIn)) {
+        $temperatureIn.addClass('error');
+    }
+
+    if (isNaN(temperatureOut)) {
+        $temperatureOut.addClass('error');
+    } 
+
+    if (isNaN(humidityOut)) {
+      $humidityOut.addClass('error');
+    }
 
       if (!$calc.find('.error').length && typeof AeroflexCalc !== 'undefined') {
         
