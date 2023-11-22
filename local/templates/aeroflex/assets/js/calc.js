@@ -1528,7 +1528,7 @@ var AeroflexCalc = {
     14.5115,
     14.5264,
     14.5414,
-    14, 5563,
+    14.5563,
     14.5713,
     14.5862,
     14.6012,
@@ -2535,7 +2535,7 @@ var AeroflexCalc = {
 
       const LnDiameter = Math.log(((diameterOut / 1000) + 2 * k) / (diameterOut / 1000))
       const insulationDepth = (LnDiameter * thermalLossCoefficient * ((diameterOut / 1000) + 2 * k)) / (2 * Number(this.getThermalConductivityByMaterial(material, temperatureIn, temperatureOut).toFixed(4)))
-      
+
       if ((insulationDepth / 1000) - density >= 0) {
         console.log('insulationDepth ', insulationDepth)
         return k * 1000
@@ -2675,48 +2675,74 @@ var AeroflexCalc = {
   },
 
   getXlnX: function (material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut) {
-    const koeff = this.getThermalConductivityCoefficient(material, [[0.0277], [0.0267], [0.025]])
-    const left = (2 * koeff / this.getThermalLossCoefficient(false, false, true, emission))
-    const right = ((dewPointTemperature - temperatureIn) / (temperatureOut - dewPointTemperature))
 
-    return left * right
+    const koeff = +(this.getThermalConductivityByMaterial(material, temperatureIn, temperatureOut).toFixed(4))
+    const left = (2 * koeff) / (this.getThermalLossCoefficient(false, false, true, emission) * (diameterOut / 1000))
+    const right = ((dewPointTemperature - temperatureIn) / (temperatureOut - dewPointTemperature))
+    const xlnx = left * right
+
+    return Number(xlnx.toFixed(3))
   },
 
-  getInsulationWidthForCondensate: function (material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut) {
-    const XlnX = this.getXlnX(material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut)
+  getInsulationWidthForCondensate: function (material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut, isFlat, humidityOut) {
 
-    let index;
-    let startValue = 1.000;
-    let step = 0.0050;
+    if (isFlat) {
+      
+      const b = +(this.getThermalConductivityByMaterial(material, temperatureIn, temperatureOut).toFixed(4))
+      const lossKoef = this.getThermalLossCoefficient(false, false, true, emission)
+      
+      const a = (b / lossKoef ) * (((temperatureOut - temperatureIn) / (temperatureOut - dewPointTemperature)) - 1)
 
-    for (let i = 0; i <= this.xLnX.length - 1; i++) {
-      const cur = XlnX;
-      const prev = this.xLnX[i - 1];
-      const next = this.xLnX[i + 1];
+      return a * 1000
+    } 
+  
+    const xlnX = this.getXlnX(material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut)
+    
+    const getX = () => {
+      let index;
+      let prevDifference;
+      let startValue = 1.000;
+      let step = 0.0050;
+  
+      for (let i = 0; i <= this.xLnX.length - 1; i++) {
+        const cur = this.xLnX[i];
 
-      if (prev && next && cur >= prev && cur <= next) {
-        let differenceLeft = cur - prev;
-        let differenceRight = next - prev;
-        index = i;
-        tableXlnXValue =  differenceRight > differenceLeft ? prev : next
-        break;
-      } 
+        if (xlnX === 0) {
+          index = 0;
+          break;
+        }
 
-      if (!prev && next && cur <= next) {
-        tableXlnXValue = next;
-        index = i;
-        break;
+        if (i === 0 && xlnX !== 0) {
+          continue;
+        }
+
+        if (xlnX === cur) {
+          index = i
+          break;
+        } 
+  
+        let curDifference = Math.abs(xlnX - cur);
+
+        if (!prevDifference || prevDifference > curDifference) {
+          prevDifference = curDifference;
+          continue;
+        } 
+
+        if (curDifference > prevDifference) {
+          index = i - 1;
+          break;
+        }
       }
-
-      if (prev && !next && cur >= prev) {
-        tableXlnXValue = prev;
-        index = i;
-        break;
-      }
-
+    
+      const x = startValue + index * step
+      return Number(x.toFixed(4))
     }
     
-    return 1000 * (diameterOut / 2000) * (startValue + index * step - 1)
+    const X = getX();
+
+    const depth = ((diameterOut / 1000) * (X - 1)) / 2
+
+    return Number((depth * 1000).toFixed(2))
   },
 
   // gas Calc

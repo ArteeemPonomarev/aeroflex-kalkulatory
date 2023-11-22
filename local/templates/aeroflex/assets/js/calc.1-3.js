@@ -87,6 +87,7 @@ $(function() {
   $('.calc_test ._result').on('click', function () {
       let
           $calc = $(this).closest('.calc_test'),
+          $flat = $calc.find('[name="flat"]:checked'),
           $diameter_in = $calc.find('[name="diameter_in"]'),
           $diameter_out = $calc.find('[name="diameter_out"]'),
           $temperatureIn = $calc.find('.temperature_in'),
@@ -107,6 +108,7 @@ $(function() {
       // Main
       const
           material = parseInt($material.val(), 10),
+          isFlat = $flat.val() === 'flat',
           diameterIn = parseFloat($diameter_in.val().replace(/,/, '.')),
           diameterOut = parseFloat($diameter_out.val().replace(/,/, '.')),
           temperatureIn = parseFloat($temperatureIn.val().replace(/,/, '.')),
@@ -133,7 +135,7 @@ $(function() {
 
       if (!$calc.find('.error').length && typeof AeroflexCalc !== 'undefined') {
         
-        let depth = AeroflexCalc.getInsulationWidthForCondensate(material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut);
+        let depth = AeroflexCalc.getInsulationWidthForCondensate(material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut, isFlat, humidityOut);
           $result.addClass('active');
             
           $('.calc__result').addClass('active');
