@@ -24,6 +24,18 @@ $(function() {
       $(window).trigger('calc_changes');
   });
 
+  $('[name="flat"]').on('change', function() {
+    const $calc = $('.calc');
+    const $flat = $calc.find('[name="flat"]:checked');
+    const $diameter_in = $calc.find('[name="diameter_in"]');
+    const $diameter_out = $calc.find('[name="diameter_out"]');
+
+    if ($flat.val() === 'flat') {
+      $diameter_in.removeClass('error');
+      $diameter_out.removeClass('error');
+    }
+  });
+
   $('[name="diameter_type"]').on('change', function() {
       $('#diameter option').prop('disabled', true);
       $('#diameter optgroup').prop('disabled', true);
@@ -74,14 +86,7 @@ $(function() {
           $calc = $('.calc_test'),
           $temperatureOut = $calc.find('.temperature_out');
           
-
       $calc.find('.calc__result').removeClass('active');
-
-      // if (isNaN(parseFloat($region.data('temperature')))) {
-      //     $region_select.addClass('error');
-      // } else {
-      //     $region_select.removeClass('error');
-      // }
   });
 
   $('.calc_test ._result').on('click', function () {
@@ -114,17 +119,17 @@ $(function() {
           temperatureIn = parseFloat($temperatureIn.val().replace(/,/, '.')),
           temperatureOut = parseFloat($temperatureOut.val().replace(/,/, '.')),
           humidityOut = parseFloat($humidityOut.val().replace(/,/, '.')),
-          dewPointTemperature = parseFloat($dewPointTemperature.val().replace(/,/, '.'))
+          dewPointTemperature = parseFloat($dewPointTemperature.val().replace(/,/, '.')),
+          pipe = parseFloat($pipe.val().replace(/,/, '.')), 
           emission = parseInt($pipe.val(), 10);
-
+        console.log(pipe)
       AeroflexCalc.init();
-      //console.log('asd ', AeroflexCalc.getThermalLossCoefficient(isFlat, false, true, emission))
-      $heat_coefficient.attr('placeholder', AeroflexCalc.getThermalLossCoefficient(false, false, true, emission));
+
+      $heat_coefficient.attr('placeholder', pipe);
 
       // Extended
       const
           heat_coefficient = parseFloat($heat_coefficient.val().replace(/,/, '.'));
-          //density = parseFloat($density.val().replace(/,/, '.'));
 
       AeroflexCalc.init({
           heat_coefficient
@@ -143,19 +148,19 @@ $(function() {
 
       if (isNaN(temperatureIn)) {
         $temperatureIn.addClass('error');
-    }
+      }
 
-    if (isNaN(temperatureOut)) {
+      if (isNaN(temperatureOut)) {
         $temperatureOut.addClass('error');
-    } 
+      } 
 
-    if (isNaN(humidityOut)) {
-      $humidityOut.addClass('error');
-    }
+      if (isNaN(humidityOut)) {
+        $humidityOut.addClass('error');
+      }
 
       if (!$calc.find('.error').length && typeof AeroflexCalc !== 'undefined') {
         
-        let depth = AeroflexCalc.getInsulationWidthForCondensate(material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut, isFlat, humidityOut);
+        let depth = AeroflexCalc.getInsulationWidthForCondensate(material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut, isFlat, humidityOut, pipe);
           $result.addClass('active');
             
           $('.calc__result').addClass('active');

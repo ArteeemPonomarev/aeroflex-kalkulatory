@@ -2674,29 +2674,29 @@ var AeroflexCalc = {
     return (top / bottom).toFixed(2)
   },
 
-  getXlnX: function (material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut) {
+  getXlnX: function (material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut, pipe) {
 
     const koeff = +(this.getThermalConductivityByMaterial(material, temperatureIn, temperatureOut).toFixed(4))
-    const left = (2 * koeff) / (this.getThermalLossCoefficient(false, false, true, emission) * (diameterOut / 1000))
+    const left = (2 * koeff) / (pipe * (diameterOut / 1000))
     const right = ((dewPointTemperature - temperatureIn) / (temperatureOut - dewPointTemperature))
     const xlnx = left * right
 
     return Number(xlnx.toFixed(3))
   },
 
-  getInsulationWidthForCondensate: function (material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut, isFlat, humidityOut) {
+  getInsulationWidthForCondensate: function (material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut, isFlat, humidityOut, pipe) {
 
     if (isFlat) {
       
       const b = +(this.getThermalConductivityByMaterial(material, temperatureIn, temperatureOut).toFixed(4))
-      const lossKoef = this.getThermalLossCoefficient(false, false, true, emission)
+      const lossKoef = pipe
       
       const a = (b / lossKoef ) * (((temperatureOut - temperatureIn) / (temperatureOut - dewPointTemperature)) - 1)
 
       return a * 1000
     } 
   
-    const xlnX = this.getXlnX(material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut)
+    const xlnX = this.getXlnX(material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut, pipe)
     
     const getX = () => {
       let index;
