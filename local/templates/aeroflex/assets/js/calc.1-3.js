@@ -72,12 +72,27 @@ $(function() {
   $('.temperature_out').on('change', function () {
     const $calc = $('.calc');
     const $humidityOut = $calc.find('[name="humidity_out"]');
+    const $temperatureIn = $calc.find('.temperature_in');
+    const $temperatureOut = $calc.find('.temperature_out');
+    const temperatureIn = parseFloat($temperatureIn.val().replace(/,/, '.'));
+    const temperatureOut = parseFloat($temperatureOut.val().replace(/,/, '.'));
 
     if ($(this).val() && $humidityOut.val()) {
 
       $calc.find('[name="dew-point-temperature"]').val(AeroflexCalc.getDewPoint(+$humidityOut.val(), +$(this).val()))
     } else {
       $calc.find('[name="dew-point-temperature"]').val('');
+    }
+
+    const errorMessage = () => {
+      if (temperatureIn > temperatureOut) {
+        return `Убедитесь что температура вещества не превышает температуру окружающей воздуха`
+      }
+    }
+
+    if (!errorMessage()) {
+      $temperatureOut.removeClass('error');
+      $('.temperature_out_error').text('');
     }
   });
 
@@ -158,13 +173,24 @@ $(function() {
         $humidityOut.addClass('error');
       }
 
+      const errorMessage = () => {
+        if (temperatureIn > temperatureOut) {
+          return `Убедитесь что температура вещества не превышает температуру окружающей воздуха`
+        }
+      }
+
+      if (errorMessage()) {
+        $temperatureOut.addClass('error');
+        $('.temperature_out_error').text(errorMessage());
+      }
+
       if (!$calc.find('.error').length && typeof AeroflexCalc !== 'undefined') {
         
         let depth = AeroflexCalc.getInsulationWidthForCondensate(material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut, isFlat, humidityOut, pipe);
           $result.addClass('active');
             
           $('.calc__result').addClass('active');
-          $('.otvet').val(depth.toFixed(2));
+          $('.otvet').val(errorMessage() ? 'По вопросам - calc@aeroflex-russia.ru' : depth.toFixed(2));
       }
   });
 });

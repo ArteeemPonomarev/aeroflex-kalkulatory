@@ -2684,6 +2684,12 @@ var AeroflexCalc = {
     return Number(xlnx.toFixed(3))
   },
 
+  getXWithInterpolation: function(curXlnx, prevXlnx, xCur, xPrev, xlnX) {
+    const x = (xlnX - prevXlnx) * (xCur - xPrev) / (curXlnx - prevXlnx)
+    
+    return x + xPrev
+  },
+
   getInsulationWidthForCondensate: function (material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut, isFlat, humidityOut, pipe) {
 
     if (isFlat) {
@@ -2699,16 +2705,18 @@ var AeroflexCalc = {
     const xlnX = this.getXlnX(material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut, pipe)
     
     const getX = () => {
-      let index;
-      let prevDifference;
+      let topIndex;
+      let bottomIndex;
       let startValue = 1.000;
       let step = 0.0050;
+      let curXlnx;
+      let prevXlnx;
   
       for (let i = 0; i <= this.xLnX.length - 1; i++) {
-        const cur = this.xLnX[i];
+        curXlnx = this.xLnX[i];
 
         if (xlnX === 0) {
-          index = 0;
+          topIndex = 0;
           break;
         }
 
@@ -2716,31 +2724,45 @@ var AeroflexCalc = {
           continue;
         }
 
-        if (xlnX === cur) {
-          index = i
+        if (xlnX === curXlnx) {
+          topIndex = i
           break;
         } 
   
-        let curDifference = Math.abs(xlnX - cur);
+        if (xlnX < curXlnx && xlnX < this.xLnX[i - 1]) {
+          topIndex = i;
+          bottomIndex = i - 1;
+          prevXlnx = this.xLnX[i - 1];
+          break;
+        }
 
-        if (!prevDifference || prevDifference > curDifference) {
-          prevDifference = curDifference;
-          continue;
-        } 
-
-        if (curDifference > prevDifference) {
-          index = i - 1;
+        if (i >= (this.xLnX.length - 1)) {
+          topIndex = i;
           break;
         }
       }
-    
-      const x = startValue + index * step
-      return Number(x.toFixed(4))
+
+      let X;
+
+      if (bottomIndex === undefined) {
+        X = startValue + topIndex * step;
+        return Number(X.toFixed(4))
+      }
+
+      let xCur = startValue + topIndex * step;
+      let xPrev = startValue + bottomIndex * step;
+
+      console.log( {curXlnx, prevXlnx, xCur, xPrev, xlnX} )
+      X = this.getXWithInterpolation(curXlnx, prevXlnx, xCur, xPrev, xlnX);
+
+      return Number(X.toFixed(4))
     }
     
     const X = getX();
 
+    console.log({ xlnX, X, diameterOut })
     const depth = ((diameterOut / 1000) * (X - 1)) / 2
+
 
     return Number((depth * 1000).toFixed(2))
   },
@@ -2756,11 +2778,11 @@ var AeroflexCalc = {
   },
 
   getGasDewPointTemperature: function (gasMovingTemperature, temperatureOut, gasMovingHumidity) {
-    console.log({ gasMovingTemperature, temperatureOut, gasMovingHumidity })
+    
     const top = 237.7 * (17.27 * gasMovingTemperature / (237.7 + temperatureOut + Math.log(gasMovingHumidity / 100))) 
     const bottom = (17.27 - ((17.27 * gasMovingTemperature) / (237.7 * gasMovingTemperature + Math.log(gasMovingHumidity / 100)))) 
 
     return (top / bottom).toFixed(4)
-  }, 
+  }
 
 };
