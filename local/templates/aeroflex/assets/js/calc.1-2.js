@@ -103,6 +103,14 @@ $(function() {
           $('[name="diameter"]').trigger('change');
       }
   });
+  
+  $('[name="region"]').on('change', function () {
+    const $calc = $('.calc');
+
+    $temperature = $calc.find('[name="region"] option:selected').data('temperature');
+    
+    $calc.find('.temperature_out').val($temperature);  
+  });
 
   $(window).on('calc_changes', function () {
       let
@@ -126,6 +134,7 @@ $(function() {
           $region = $calc.find('[name="region"] option:selected'),
           $position = $calc.find('[name="position"]:checked'),
           $indoor = $calc.find('[name="indoor"]:checked'),
+          $supportType = $calc.find('[name="support_type"]:checked'),
           $flat = $calc.find('[name="flat"]:checked'),
           $diameter_in = $calc.find('[name="diameter_in"]'),
           $diameter_out = $calc.find('[name="diameter_out"]'),
@@ -138,27 +147,22 @@ $(function() {
           $pipeWidth = $calc.find('[name="pipe-width"]'),
           $pipeMaterialDensity = $calc.find('[name="pipe-material-density"]'),
           $materialHeatCapacity = $calc.find('[name="material-heat-capacity"]'),
-          $heatCoefficientAdditionsLosses = $calc.find('[name="heat-coefficient-additions-losses"]'),
           $startCarrierTemperature = $calc.find('[name="start-carrier-temperature"]'),
           $startCoolantFrostTemperature = $calc.find('[name="start-coolant-frost-temperature"]'),
           $permissibleIceContent = $calc.find('[name="permissible-ice-content"]'),
           $coolantDensity = $calc.find('[name="coolant-density"]'),
           $coolantHeatCapacity = $calc.find('[name="coolant-heat-capacity"]'),
           $stopTime = $calc.find('[name="stop-time"]');
-          console.log('parseFloat($heat_coefficient.v', parseFloat($heat_coefficient.val()))
+          
       $approx.closest('.calc__row').addClass('hidden');
 
       $heat_coefficient.attr('placeholder', '');
-      //$density.attr('placeholder', '');
-
+      
       if (isNaN(parseFloat($region.data('heat')))) {
           $region.closest('.calc__select').addClass('error');
           return;
       }
 
-      if (isNaN(parseFloat($pipeWidth.val()))) {
-        $pipeWidth.addClass('error');
-      }
 
       if (isNaN(parseFloat($diameter_in.val()))) {
         $diameter_in.addClass('error');
@@ -205,24 +209,25 @@ $(function() {
           isIndoor = $indoor.val() === 'close',
           isFlat = $flat.val() === 'flat',
           isVertical = $position.val() === 'vertical',
+          isSupportTypeMoving = $supportType.val() === 'moving',
           region = $region.data('type'),
           emission = parseInt($pipe.val(), 10),
           pipeWidth = parseFloat($pipeWidth.val().replace(/,/, '.')),
           pipeMaterialDensity = parseFloat($pipeMaterialDensity.val().replace(/,/, '.')),
           materialHeatCapacity = parseFloat($materialHeatCapacity.val().replace(/,/, '.')),
-          heatCoefficientAdditionsLosses = parseFloat($heatCoefficientAdditionsLosses.val().replace(/,/, '.')),
           startCarrierTemperature = parseFloat($startCarrierTemperature.val().replace(/,/, '.')),
           startCoolantFrostTemperature = parseFloat($startCoolantFrostTemperature.val().replace(/,/, '.')),
           permissibleIceContent = parseFloat($permissibleIceContent.val().replace(/,/, '.')),
           coolantDensity = parseFloat($coolantDensity.val().replace(/,/, '.')),
           coolantHeatCapacity = parseFloat($coolantHeatCapacity.val().replace(/,/, '.')),
+          isPipeMetal = $pipe.data('material') === 'metal';
           stopTime = parseFloat($stopTime.val().replace(/,/, '.'));
 
 
       AeroflexCalc.init();
 
-      $heat_coefficient.attr('placeholder', AeroflexCalc.getThermalLossCoefficient(isFlat, isVertical, isIndoor, emission));
-      console.log()
+      $heat_coefficient.attr('placeholder', AeroflexCalc.getThermalLossCoefficient(isFlat, isVertical, false, emission));
+      
       // Extended
       const
           heat_coefficient = parseFloat($heat_coefficient.val().replace(/,/, '.'));
@@ -249,6 +254,27 @@ $(function() {
       
       
       if (!$calc.find('.error').length && typeof AeroflexCalc !== 'undefined') {
+        
+        const getMetalKoef = () => {
+
+          if (!isPipeMetal) {
+            return 1.7
+          }
+
+          if (!isSupportTypeMoving) {
+            return 1.05
+          }
+
+          if (diameterOut >= 150) {
+            return 1.15
+          }
+
+          return 1.2
+        }
+
+        let heatCoefficientAdditionsLosses = getMetalKoef();
+        
+
           let
               depth = AeroflexCalc.getInsulationDepthForLiquidFrost(
                 material,
