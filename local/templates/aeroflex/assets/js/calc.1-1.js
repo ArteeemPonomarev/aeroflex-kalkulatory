@@ -18,7 +18,7 @@ $(function() {
       $('#diameter_custom').prop('disabled', false);
       $('#diameter_custom option').prop('disabled', false);
   }
-
+  
   $('.calc_test input, .calc_test select').on('change', function () {
       $(this).removeClass('error');
       $(window).trigger('calc_changes');
@@ -30,7 +30,7 @@ $(function() {
 
     if ($indoor.val() === 'open') {
       $temperature = $calc.find('[name="region"] option:selected').data('temperature');
-      console.log($temperature);
+      
       $calc.find('.temperature_out').val($temperature);
       $calc.find('.temperature_out').prop('readonly', true);
     }
@@ -43,15 +43,14 @@ $(function() {
     const $surfaceInsulationTemperature = $calc.find('.surface_insulation_temperature');
     const $pipe = $calc.find('[name="pipe"] option:selected').data('material'); // material or no-material
     
-    $('.surface_insulation_temperature').trigger('change');
-  
     if ($indoor.val() === 'open') {
       $calc.find('.temperature_out').val($temperature);
       $calc.find('.temperature_out').prop('readonly', true);
-      console.log($pipe);
+      
       if ($pipe === 'metal') {
         $surfaceInsulationTemperature.val('55');
       };
+
       if ($pipe === 'no-metal') {
         $surfaceInsulationTemperature.val('60');
       }
@@ -62,6 +61,8 @@ $(function() {
       $calc.find('.temperature_out').prop('readonly', false);
       $surfaceInsulationTemperature.val('40');
     }
+
+    $('.surface_insulation_temperature').trigger('change');
   });
 
 
@@ -142,7 +143,7 @@ $(function() {
         return `Максимальная температура поверхности с указанными параметрами 60 ºС`
       }
     }
-
+    
     if (errorMessage()) {
       $surfaceInsulationTemperature.addClass('error');
       $('.surface_insulation_temperature__error').text(errorMessage());
@@ -172,7 +173,7 @@ $(function() {
           $region_select.removeClass('error');
       }
   });
-
+  
   $('.calc_test ._result').on('click', function () {
       let
           $calc = $(this).closest('.calc_test'),
@@ -221,7 +222,6 @@ $(function() {
       // Extended
       const
           heat_coefficient = parseFloat($heat_coefficient.val().replace(/,/, '.'));
-          //density = parseFloat($density.val().replace(/,/, '.'));
 
       AeroflexCalc.init({
           heat_coefficient

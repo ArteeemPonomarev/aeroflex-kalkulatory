@@ -40,8 +40,7 @@ $(function() {
           $calc.find('[name="diameter_in"]').val($(this).val());
           $calc.find('[name="diameter_out"]').val($(this).find('option:selected').data('dh'));
           $calc.find('[name="diameter_in"], [name="diameter_out"]').prop('readonly', true);
-          console.log($('[name="diameter_in"]').val())
-          console.log($('[name="diameter_out"]').val())
+        
           $calc.find($('[name="pipe-width"]')).val(($('[name="diameter_out"]').val() - $('[name="diameter_in"]').val()) / 2)
           $calc.find('[name="diameter_in"]').removeClass('error')
           $calc.find('[name="diameter_out"]').removeClass('error')
@@ -273,7 +272,7 @@ $(function() {
         }
 
         let heatCoefficientAdditionsLosses = getMetalKoef();
-        
+        console.log({ heatCoefficientAdditionsLosses, temperatureOut })
 
           let
               depth = AeroflexCalc.getInsulationDepthForLiquidFrost(

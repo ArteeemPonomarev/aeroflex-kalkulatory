@@ -91,7 +91,6 @@ $(function() {
           $calc = $('.calc_test'),
           $temperatureOut = $calc.find('.temperature_out');
           
-
       $calc.find('.calc__result').removeClass('active');
   });
 

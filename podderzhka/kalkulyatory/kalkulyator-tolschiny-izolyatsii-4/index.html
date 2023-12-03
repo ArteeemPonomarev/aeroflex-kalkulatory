@@ -470,6 +470,330 @@
                 </div>
               </div>
 
+              <div class="calc__row pipe_type">
+                <div class="calc__col"><span>Тип и размеры трубопровода, мм</span></div>
+                <div class="calc__col">
+                  <div class="calc__radio">
+                    <!-- <div class="radioButton">
+                      <input type="radio" name="diameter_type" value="diameter_0" id="diameter_type_0">
+                      <label for="diameter_type_0"><span>Стальной ВГП <br>ГОСТ 3262-75</span></label>
+                    </div> -->
+                    <div class="radioButton">
+                      <input type="radio" name="diameter_type" value="diameter_0" id="diameter_type_0">
+                      <label for="diameter_type_0"><span>Плоская ВГП <br>ГОСТ 3262-75</span></label>
+                    </div>
+                    <div class="radioButton">
+                      <input type="radio" name="diameter_type" value="diameter_21" id="diameter_type_21">
+                      <label for="diameter_type_21"><span>Стальной ЭС <br>ГОСТ 10704-91</span></label>
+                    </div>
+                    <div class="radioButton">
+                      <input type="radio" name="diameter_type" value="diameter_50" id="diameter_type_50">
+                      <label for="diameter_type_50"><span>Стальной НЖ <br>ГОСТ 9941-81</span></label>
+                    </div>
+                    <div class="radioButton">
+                      <input type="radio" name="diameter_type" value="diameter_75" id="diameter_type_75">
+                      <label for="diameter_type_75"><span>Полимерный <br>ГОСТ 32415-2013</span></label>
+                    </div>
+                    <div class="radioButton">
+                      <input type="radio" name="diameter_type" value="diameter_109" id="diameter_type_109">
+                      <label for="diameter_type_109"><span>Медный <br>ГОСТ 617-2006</span></label>
+                    </div>
+                    <div class="radioButton">
+                      <input type="radio" checked id="diameter_type_custom" name="diameter_type"
+                        value="diameter_custom">
+                      <label for="diameter_type_custom"><span>Произвольные размеры</span></label>
+                    </div>
+                  </div>
+                  <div class="calc__select">
+                    <select class="js-select-radio" name="diameter" id="diameter">
+                      <optgroup label="Задать вручную" id="diameter_custom">
+                        <option value="" data-dh="">Собственные размеры</option>
+                      </optgroup>
+
+                      <optgroup label="Стальной ВГП ГОСТ 3262-75" id="diameter_0">
+
+                        <option class="calc__option" value="4" data-dh="6">Ду 4, Дн 6</option>
+
+                        <option class="calc__option" value="6" data-dh="8">Ду 6, Дн 8</option>
+
+                        <option class="calc__option" value="8" data-dh="10">Ду 8, Дн 10</option>
+
+                        <option class="calc__option" value="10" data-dh="12">Ду 10, Дн 12</option>
+
+                        <option class="calc__option" value="10" data-dh="15">Ду 10, Дн 15</option>
+
+                        <option class="calc__option" value="15" data-dh="18">Ду 15, Дн 18</option>
+
+                        <option class="calc__option" value="15" data-dh="22">Ду 15, Дн 22</option>
+
+                        <option class="calc__option" value="20" data-dh="28">Ду 20, Дн 28</option>
+
+                        <option class="calc__option" value="25" data-dh="35">Ду 25, Дн 35</option>
+
+                        <option class="calc__option" value="32" data-dh="42">Ду 32, Дн 42</option>
+
+                        <option class="calc__option" value="45" data-dh="54">Ду 45, Дн 54</option>
+
+                        <option class="calc__option" value="50" data-dh="64">Ду 50, Дн 64</option>
+
+                        <option class="calc__option" value="50" data-dh="66.7">Ду 50, Дн 66,7</option>
+
+                        <option class="calc__option" value="65" data-dh="76.1">Ду 65, Дн 76,1</option>
+
+                        <option class="calc__option" value="80" data-dh="88">Ду 80, Дн 88,9</option>
+
+                        <option class="calc__option" value="100" data-dh="108">Ду 100, Дн 108</option>
+
+                        <option class="calc__option" value="125" data-dh="133">Ду 125, Дн 133</option>
+
+                        <option class="calc__option" value="150" data-dh="159">Ду 150, Дн 159</option>
+
+                        <option class="calc__option" value="200" data-dh="219">Ду 200, Дн 219</option>
+
+                        <option class="calc__option" value="250" data-dh="267">Ду 250, Дн 267</option>
+                      </optgroup>
+
+                      <optgroup label="Стальной ЭС ГОСТ 10704-91" id="diameter_21">
+
+                        <option class="calc__option" value="10" data-dh="15">Ду 10, Дн 15</option>
+
+                        <option class="calc__option" value="15" data-dh="21.3">Ду 15, Дн 21,3</option>
+
+                        <option class="calc__option" value="20" data-dh="25">Ду 20, Дн 25</option>
+
+                        <option class="calc__option" value="25" data-dh="32">Ду 25, Дн 32</option>
+
+                        <option class="calc__option" value="32" data-dh="38">Ду 32, Дн 38</option>
+
+                        <option class="calc__option" value="40" data-dh="48">Ду 40, Дн 48</option>
+
+                        <option class="calc__option" value="50" data-dh="57">Ду 50, Дн 57</option>
+
+                        <option class="calc__option" value="65" data-dh="76">Ду 65, Дн 76</option>
+
+                        <option class="calc__option" value="80" data-dh="89">Ду 80, Дн 89</option>
+
+                        <option class="calc__option" value="95" data-dh="102">Ду 95, Дн 102</option>
+
+                        <option class="calc__option" value="100" data-dh="108">Ду 100, Дн 108</option>
+
+                        <option class="calc__option" value="100" data-dh="114">Ду 100, Дн 114</option>
+
+                        <option class="calc__option" value="125" data-dh="133">Ду 125, Дн 133</option>
+
+                        <option class="calc__option" value="150" data-dh="159">Ду 150, Дн 159</option>
+
+                        <option class="calc__option" value="200" data-dh="219">Ду 200, Дн 219</option>
+
+                        <option class="calc__option" value="250" data-dh="273">Ду 250, Дн 273</option>
+
+                        <option class="calc__option" value="300" data-dh="325">Ду 300, Дн 325</option>
+
+                        <option class="calc__option" value="350" data-dh="355">Ду 350, Дн 355</option>
+
+                        <option class="calc__option" value="350" data-dh="377">Ду 350, Дн 377</option>
+
+                        <option class="calc__option" value="400" data-dh="426">Ду 400, Дн 426</option>
+
+                        <option class="calc__option" value="500" data-dh="530">Ду 500, Дн 530</option>
+
+                        <option class="calc__option" value="600" data-dh="630">Ду 600, Дн 630</option>
+
+                        <option class="calc__option" value="700" data-dh="720">Ду 700, Дн 720</option>
+
+                        <option class="calc__option" value="800" data-dh="820">Ду 800, Дн 820</option>
+
+                        <option class="calc__option" value="900" data-dh="920">Ду 900, Дн 920</option>
+
+                        <option class="calc__option" value="1000" data-dh="1020">Ду 1000, Дн 1020</option>
+
+                        <option class="calc__option" value="1200" data-dh="1220">Ду 1200, Дн 1220</option>
+
+                        <option class="calc__option" value="1400" data-dh="1420">Ду 1400, Дн 1420</option>
+                      </optgroup>
+
+                      <optgroup label="Стальной НЖ ГОСТ 9941-81" id="diameter_50">
+
+                        <option class="calc__option" value="10" data-dh="16">Ду 10, Дн 16</option>
+
+                        <option class="calc__option" value="15" data-dh="20">Ду 15, Дн 20</option>
+
+                        <option class="calc__option" value="20" data-dh="25">Ду 20, Дн 25</option>
+
+                        <option class="calc__option" value="25" data-dh="30">Ду 25, Дн 30</option>
+
+                        <option class="calc__option" value="25" data-dh="32">Ду 25, Дн 32</option>
+
+                        <option class="calc__option" value="32" data-dh="38">Ду 32, Дн 38</option>
+
+                        <option class="calc__option" value="32" data-dh="42">Ду 32, Дн 42</option>
+
+                        <option class="calc__option" value="40" data-dh="45">Ду 40, Дн 45</option>
+
+                        <option class="calc__option" value="40" data-dh="48">Ду 40, Дн 48</option>
+
+                        <option class="calc__option" value="45" data-dh="50">Ду 45, Дн 50</option>
+
+                        <option class="calc__option" value="45" data-dh="51">Ду 45, Дн 51</option>
+
+                        <option class="calc__option" value="65" data-dh="70">Ду 65, Дн 70</option>
+
+                        <option class="calc__option" value="65" data-dh="73">Ду 65, Дн 73</option>
+
+                        <option class="calc__option" value="65" data-dh="76">Ду 65, Дн 76</option>
+
+                        <option class="calc__option" value="65" data-dh="80">Ду 65, Дн 80</option>
+
+                        <option class="calc__option" value="80" data-dh="89">Ду 80, Дн 89</option>
+
+                        <option class="calc__option" value="80" data-dh="90">Ду 80, Дн 90</option>
+
+                        <option class="calc__option" value="90" data-dh="102">Ду 90, Дн 102</option>
+
+                        <option class="calc__option" value="100" data-dh="108">Ду 100, Дн 108</option>
+
+                        <option class="calc__option" value="125" data-dh="130">Ду 125, Дн 130</option>
+
+                        <option class="calc__option" value="125" data-dh="140">Ду 125, Дн 140</option>
+
+                        <option class="calc__option" value="150" data-dh="160">Ду 150, Дн 160</option>
+
+                        <option class="calc__option" value="200" data-dh="220">Ду 200, Дн 220</option>
+
+                        <option class="calc__option" value="250" data-dh="273">Ду 250, Дн 273</option>
+                      </optgroup>
+
+                      <optgroup label="Полимерный ГОСТ 32415-2013" id="diameter_75">
+
+                        <option class="calc__option" value="6" data-dh="10">Ду 6, Дн 10</option>
+
+                        <option class="calc__option" value="6" data-dh="12">Ду 6, Дн 12</option>
+
+                        <option class="calc__option" value="10" data-dh="16">Ду 10, Дн 16</option>
+
+                        <option class="calc__option" value="15" data-dh="20">Ду 15, Дн 20</option>
+
+                        <option class="calc__option" value="20" data-dh="25">Ду 20, Дн 25</option>
+
+                        <option class="calc__option" value="25" data-dh="32">Ду 25, Дн 32</option>
+
+                        <option class="calc__option" value="32" data-dh="40">Ду 32, Дн 40</option>
+
+                        <option class="calc__option" value="40" data-dh="50">Ду 40, Дн 50</option>
+
+                        <option class="calc__option" value="50" data-dh="63">Ду 50, Дн 63</option>
+
+                        <option class="calc__option" value="65" data-dh="75">Ду 65, Дн 75</option>
+
+                        <option class="calc__option" value="80" data-dh="90">Ду 80, Дн 90</option>
+
+                        <option class="calc__option" value="100" data-dh="110">Ду 100, Дн 110</option>
+
+                        <option class="calc__option" value="100" data-dh="125">Ду 100, Дн 125</option>
+
+                        <option class="calc__option" value="125" data-dh="140">Ду 125, Дн 140</option>
+
+                        <option class="calc__option" value="150" data-dh="160">Ду 150, Дн 160</option>
+
+                        <option class="calc__option" value="150" data-dh="180">Ду 150, Дн 180</option>
+
+                        <option class="calc__option" value="160" data-dh="200">Ду 160, Дн 200</option>
+
+                        <option class="calc__option" value="200" data-dh="225">Ду 200, Дн 225</option>
+
+                        <option class="calc__option" value="225" data-dh="250">Ду 225, Дн 250</option>
+
+                        <option class="calc__option" value="250" data-dh="280">Ду 250, Дн 280</option>
+
+                        <option class="calc__option" value="300" data-dh="315">Ду 300, Дн 315</option>
+
+                        <option class="calc__option" value="300" data-dh="355">Ду 300, Дн 355</option>
+
+                        <option class="calc__option" value="350" data-dh="400">Ду 350, Дн 400</option>
+
+                        <option class="calc__option" value="400" data-dh="450">Ду 400, Дн 450</option>
+
+                        <option class="calc__option" value="450" data-dh="500">Ду 450, Дн 500</option>
+
+                        <option class="calc__option" value="500" data-dh="560">Ду 500, Дн 560</option>
+
+                        <option class="calc__option" value="600" data-dh="630">Ду 600, Дн 630</option>
+
+                        <option class="calc__option" value="650" data-dh="710">Ду 650, Дн 710</option>
+
+                        <option class="calc__option" value="700" data-dh="800">Ду 700, Дн 800</option>
+
+                        <option class="calc__option" value="800" data-dh="900">Ду 800, Дн 900</option>
+
+                        <option class="calc__option" value="900" data-dh="1000">Ду 900, Дн 1000</option>
+
+                        <option class="calc__option" value="1000" data-dh="1200">Ду 1000, Дн 1200</option>
+
+                        <option class="calc__option" value="1200" data-dh="1400">Ду 1200, Дн 1400</option>
+                      </optgroup>
+
+                      <optgroup label="Медный ГОСТ 617-2006" id="diameter_109">
+
+                        <option class="calc__option" value="4" data-dh="6">Ду 4, Дн 6</option>
+
+                        <option class="calc__option" value="6" data-dh="8">Ду 6, Дн 8</option>
+
+                        <option class="calc__option" value="8" data-dh="10">Ду 8, Дн 10</option>
+
+                        <option class="calc__option" value="10" data-dh="12">Ду 10, Дн 12</option>
+
+                        <option class="calc__option" value="10" data-dh="15">Ду 10, Дн 15</option>
+
+                        <option class="calc__option" value="15" data-dh="18">Ду 15, Дн 18</option>
+
+                        <option class="calc__option" value="15" data-dh="22">Ду 15, Дн 22</option>
+
+                        <option class="calc__option" value="20" data-dh="28">Ду 20, Дн 28</option>
+
+                        <option class="calc__option" value="25" data-dh="35">Ду 25, Дн 35</option>
+
+                        <option class="calc__option" value="32" data-dh="42">Ду 32, Дн 42</option>
+
+                        <option class="calc__option" value="45" data-dh="54">Ду 45, Дн 54</option>
+
+                        <option class="calc__option" value="50" data-dh="64">Ду 50, Дн 64</option>
+
+                        <option class="calc__option" value="50" data-dh="66.7">Ду 50, Дн 66,7</option>
+
+                        <option class="calc__option" value="65" data-dh="76.1">Ду 65, Дн 76,1</option>
+
+                        <option class="calc__option" value="80" data-dh="88.9">Ду 80, Дн 88,9</option>
+
+                        <option class="calc__option" value="100" data-dh="108">Ду 100, Дн 108</option>
+
+                        <option class="calc__option" value="125" data-dh="133">Ду 125, Дн 133</option>
+
+                        <option class="calc__option" value="150" data-dh="159">Ду 150, Дн 159</option>
+
+                        <option class="calc__option" value="200" data-dh="219">Ду 200, Дн 219</option>
+
+                        <option class="calc__option" value="250" data-dh="267">Ду 250, Дн 267</option>
+
+                      </optgroup>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="calc__row">
+                <div class="calc__col"><span>Внутренний диаметр трубопровода, мм</span></div>
+                <div class="calc__col">
+                  <input type="text" name="diameter_in" placeholder="10" class="input _inputAttr">
+                </div>
+              </div>
+
+              <div class="calc__row">
+                <div class="calc__col"><span>Внешний диаметр трубопровода, мм</span></div>
+                <div class="calc__col">
+                  <input type="text" name="diameter_out" placeholder="16" class="input _inputAttr">
+                </div>
+              </div>
+
               <div class="calc__row">
                 <div class="calc__col"><span>Ширина газохода, мм</span></div>
                 <div class="calc__col">

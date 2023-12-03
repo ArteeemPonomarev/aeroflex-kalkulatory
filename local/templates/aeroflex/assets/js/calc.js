@@ -2769,8 +2769,8 @@ var AeroflexCalc = {
     return Number((depth * 1000).toFixed(2))
   },
 
-  // gas Calc
 
+  // 4 gas Calc
   getPipeDiameter: function (gasPipeWidth, gasPipeHeight) {
 
     const widthMeter = gasPipeWidth / 1000;
