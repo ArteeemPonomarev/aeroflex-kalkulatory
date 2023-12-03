@@ -161,7 +161,7 @@ ul li:before {
 }
 .radioButton label {
     display: inline-block;
-    background-color: #fff;
+    background-color: #eee;
     padding: 14px 30px;
     cursor: pointer;
     width: auto;
@@ -171,13 +171,14 @@ ul li:before {
 }
 .radioButton label span {
     line-height: 30px;
-    border-bottom: 1px solid #ffd500;
+    border: none;
 }
 .radioButton input:checked + label {
-    background-color:#eee;
+    background-color:#fff;
 }
 .radioButton input:checked + label span {
-    border: none;
+
+    border-bottom: 1px solid #ffd500;
 }
 @media (max-width: 1170px) {
     .radioButton label {
