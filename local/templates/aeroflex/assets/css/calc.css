@@ -198,7 +198,11 @@
 
 .calc__col .input[readonly] {
   cursor: not-allowed;
-  color: #aaa
+  color: #aaa;
+}
+
+.calc__col .input[readonly].otvet {
+  color: #000;
 }
 
 .calc__col .input:focus {
@@ -267,6 +271,16 @@
 
 .calc__row:last-of-type {
   border-bottom: 1px solid #eee
+}
+
+.diameter-in.hidden, 
+.diameter-out.hidden,
+.pipe-type.hidden,
+.gas-pipe-width.hidden,
+.gas-pipe-height.hidden,
+.rectangular-pipe-diameter-out.hidden,
+.rectangular-pipe-diameter-in.hidden {
+  display: none;
 }
 
 .calc__select {

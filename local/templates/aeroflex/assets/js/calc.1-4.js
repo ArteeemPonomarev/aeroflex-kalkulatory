@@ -33,13 +33,82 @@ $(function() {
       $('#diameter').trigger('change');
   });
 
+  $('[name="diameter"]').on('change', function() {
+    const $calc = $('.calc');
+
+    if ($(this).val()) {
+        $calc.find('[name="diameter_in"]').val($(this).val());
+        $calc.find('[name="diameter_out"]').val($(this).find('option:selected').data('dh'));
+        $calc.find('[name="diameter_in"], [name="diameter_out"]').prop('readonly', true);
+      
+        $calc.find($('[name="gas-pipe-depth"]')).val(($('[name="diameter_out"]').val() - $('[name="diameter_in"]').val()) / 2)
+        $calc.find('[name="diameter_in"]').removeClass('error')
+        $calc.find('[name="diameter_out"]').removeClass('error')
+        $calc.find($('[name="gas-pipe-depth"]')).removeClass('error')
+
+    } else {
+        $calc.find('[name="diameter_in"], [name="diameter_out"]').prop('readonly', false);
+    }
+  });
+
+  $('[name="diameter_out"]').on('change', function() {
+    const $calc = $('.calc');
+  
+    const diameterIn = $calc.find('[name="diameter_in"]').val()
+    const diameterOut = $(this).val()
+
+    if (diameterIn && diameterOut) {
+      $calc.find($('[name="gas-pipe-depth"]')).val((diameterOut - diameterIn) / 2)
+    }
+  })
+
+  $('[name="diameter_in"]').on('change', function() {
+    const $calc = $('.calc');
+  
+    const diameterOut = $calc.find('[name="diameter_out"]').val()
+    const diameterIn = $(this).val()
+
+    if (diameterIn && diameterOut) {
+      $calc.find($('[name="gas-pipe-depth"]')).val((diameterOut - diameterIn) / 2)
+    }
+  });
+
   $('[name="gas-pipe-type"]').on('change', function() {
       const $calc = $('.calc');
+      const $diameterInRow = $calc.find('.diameter-in');
+      const $diameterOutRow = $calc.find('.diameter-out');
+      const $pipeTypeRow = $calc.find('.pipe-type');
+
+      const $gasPipeWidthRow = $calc.find('.gas-pipe-width');
+      const $gasPipeHeightRow = $calc.find('.gas-pipe-height');
+      const $rectangularPipeDiameterOutRow = $calc.find('.rectangular-pipe-diameter-out');
+      const $rectangularPipeDiameterInRow = $calc.find('.rectangular-pipe-diameter-in');
+
+
 
       if ($(this).val() === 'rectangular') {
         $calc.find('[name="gas-pipe-width"]').prop('disabled', false);
         $calc.find('[name="gas-pipe-height"]').prop('disabled', false);
+        $diameterInRow.addClass('hidden');
+        $diameterOutRow.addClass('hidden');
+        $pipeTypeRow.addClass('hidden');
+
+        $gasPipeWidthRow.removeClass('hidden');
+        $gasPipeHeightRow.removeClass('hidden');
+
+        $rectangularPipeDiameterOutRow.removeClass('hidden');
+        $rectangularPipeDiameterInRow.removeClass('hidden');
       } else {
+        $diameterInRow.removeClass('hidden');
+        $diameterOutRow.removeClass('hidden');
+        $pipeTypeRow.removeClass('hidden');
+
+        $gasPipeWidthRow.addClass('hidden');
+        $gasPipeHeightRow.addClass('hidden');
+
+        $rectangularPipeDiameterOutRow.addClass('hidden');
+        $rectangularPipeDiameterInRow.addClass('hidden');
+
         $calc.find('[name="gas-pipe-width"]').prop('disabled', true);
         $calc.find('[name="gas-pipe-height"]').prop('disabled', true);
       }
