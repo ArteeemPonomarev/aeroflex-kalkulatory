@@ -783,56 +783,56 @@
               <div class="calc__row diameter-in hidden">
                 <div class="calc__col"><span>Внутренний диаметр трубопровода, мм</span></div>
                 <div class="calc__col">
-                  <input type="text" name="diameter_in" placeholder="10" class="input _inputAttr">
+                  <input type="text" name="diameter_in"  class="input _inputAttr">
                 </div>
               </div>
 
               <div class="calc__row diameter-out hidden">
                 <div class="calc__col"><span>Внешний диаметр трубопровода, мм</span></div>
                 <div class="calc__col">
-                  <input type="text" name="diameter_out" placeholder="16" class="input _inputAttr">
+                  <input type="text" name="diameter_out"  class="input _inputAttr">
                 </div>
               </div>
 
               <div class="calc__row gas-pipe-width">
                 <div class="calc__col"><span>Ширина газохода, мм</span></div>
                 <div class="calc__col">
-                  <input type="text" name="gas-pipe-width" placeholder="3" class="input _inputAttr">
+                  <input type="text" name="gas-pipe-width"  class="input _inputAttr">
                 </div>
               </div>
 
               <div class="calc__row gas-pipe-height">
                 <div class="calc__col"><span>Высота газохода, мм</span></div>
                 <div class="calc__col">
-                  <input type="text" name="gas-pipe-height" placeholder="3" class="input _inputAttr">
+                  <input type="text" name="gas-pipe-height"  class="input _inputAttr">
                 </div>
               </div>
               
               <div class="calc__row">
                 <div class="calc__col"><span>Длина газохода, м</span></div>
                 <div class="calc__col">
-                  <input type="text" name="gas-pipe-length" placeholder="108" class="input _inputAttr">
+                  <input type="text" name="gas-pipe-length"  class="input _inputAttr">
                 </div>
               </div>
 
               <div class="calc__row rectangular-pipe-diameter-out">
                 <div class="calc__col"><span>Внешний (приведённый) диаметр газохода, мм</span></div>
                 <div class="calc__col">
-                  <input type="text" name="gas-pipe-outer-diameter" placeholder="3" class="input _inputAttr">
-                </div>
-              </div>
-
-              <div class="calc__row rectangular-pipe-diameter-in">
-                <div class="calc__col"><span>Внутренний (приведённый) диаметр газохода, мм</span></div>
-                <div class="calc__col">
-                  <input type="text" name="gas-pipe-inner-diameter" placeholder="3" class="input _inputAttr">
+                  <input type="text" name="gas-pipe-outer-diameter" readonly disabled  class="input _inputAttr">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Толщина стенки газохода, мм</span></div>
                 <div class="calc__col">
-                  <input type="text" name="gas-pipe-depth" placeholder="3" class="input _inputAttr">
+                  <input type="text" name="gas-pipe-depth"  class="input _inputAttr">
+                </div>
+              </div>
+
+              <div class="calc__row rectangular-pipe-diameter-in">
+                <div class="calc__col"><span>Внутренний (приведённый) диаметр газохода, мм</span></div>
+                <div class="calc__col">
+                  <input type="text" name="gas-pipe-inner-diameter" readonly disabled  class="input _inputAttr">
                 </div>
               </div>
 
@@ -851,13 +851,6 @@
               </div>
 
               <div class="calc__row">
-                <div class="calc__col"><span>Температура газа(теплоносителя), °С</span></div>
-                <div class="calc__col">
-                  <input type="text" name="gas-temperature" placeholder="3" class="input _inputAttr">
-                </div>
-              </div>
-
-              <div class="calc__row">
                 <div class="calc__col"><span>Температура окружающего воздуха, °С</span></div>
                 <div class="calc__col">
                   <input type="text" placeholder="3" class="input _inputAttr temperature_out">
@@ -867,7 +860,7 @@
               <div class="calc__row">
                 <div class="calc__col"><span>Температура транспортируемого газа(теплоносителя), °С</span></div>
                 <div class="calc__col">
-                  <input type="text" name="gas-moving-temperature" placeholder="3" class="input _inputAttr">
+                  <input type="text" name="gas-moving-temperature"  class="input _inputAttr">
                 </div>
               </div>
 
@@ -881,42 +874,42 @@
               <div class="calc__row">
                 <div class="calc__col"><span>Температура "точки росы", °С</span></div>
                 <div class="calc__col">
-                  <input type="text" name="dew-point-temperature" class="input _inputAttr">
+                  <input type="text" name="dew-point-temperature" readonly disabled class="input _inputAttr">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Скорость движения газа(теплоносителя), м/с</span></div>
                 <div class="calc__col">
-                  <input type="text" name="gas-speed" class="input _inputAttr temperature_out">
+                  <input type="text" name="gas-speed" class="input _inputAttr">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Теплопроводность газа(теплоносителя), λ·10<sup>2</sup>, Вт/(м·С)</span></div>
                 <div class="calc__col">
-                  <input type="text" name="gas-thermal-conductivity" class="input _inputAttr temperature_out">
+                  <input type="text" name="gas-thermal-conductivity" readonly disabled class="input _inputAttr">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Кинематическая вязкость газа(теплоносителя), v·10<sup>6</sup>, м<sup>2</sup>/с</span></div>
                 <div class="calc__col">
-                  <input type="text" name="gas-kinematic-viscosity" class="input _inputAttr temperature_out">
+                  <input type="text" name="gas-kinematic-viscosity" readonly disabled class="input _inputAttr">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Температуропроводность газа(теплоносителя), a·10<sup>6</sup>, м<sup>2</sup>/с</span></div>
                 <div class="calc__col">
-                  <input type="text" name="gas-thermal-diffusivity" class="input _inputAttr temperature_out">
+                  <input type="text" name="gas-thermal-diffusivity" readonly disabled class="input _inputAttr">
                 </div>
               </div>
 
               <div class="calc__row">
                 <div class="calc__col"><span>Коэффициент теплоотдачи внутренней поверхности стенки изолируемого объекта, αвн, (Вт/м<sup>2</sup>·С)</span></div>
                 <div class="calc__col">
-                  <input type="text" name="heat-transfer-coefficient" class="input _inputAttr temperature_out">
+                  <input type="text" name="heat-transfer-coefficient" readonly disabled class="input _inputAttr">
                 </div>
               </div>
 
@@ -959,7 +952,7 @@
                   <span>Коэффициент конвективной теплоотдачи от наружной поверхности, α</span>
                 </div>
                 <div class="calc__col">
-                  <input type="text" name="heat_coefficient" placeholder="" class="input" value="">
+                  <input type="text" name="heat_coefficient" readonly disabled placeholder="" class="input" value="">
                 </div>
               </div>
 

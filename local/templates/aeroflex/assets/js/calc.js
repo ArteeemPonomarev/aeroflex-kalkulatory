@@ -2068,6 +2068,22 @@ var AeroflexCalc = {
     23.0259
 
   ],
+
+  gasTemperatures: [
+    -50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150
+  ],
+  gasThermalConductivity: [
+    0.0204, 0.0212, 0.022, 0.0228, 0.0236, 0.0244, 0.0251, 0.0259, 0.0267, 0.0276, 0.0283, 0.029, 0.0296,
+    0.0305, 0.0313, 0.0321, 0.0328, 0.0334, 0.0342, 0.0349, 0.0357
+  ],
+  gasKinematicViscosity: [
+    9.23, 10.04, 10.8, 11.61, 12.43, 13.28, 14.16, 15.06, 16, 16.96, 17.95, 18.97, 20.02, 21.09,
+    22.1, 23.13, 24.3, 25.45, 26.63, 27.8, 28.95
+  ],
+  gasThermalDiffusivity: [
+    12.7, 13.8, 14.9, 16.2, 17.4, 18.8, 20, 21.4, 22.9, 24.3, 25.7, 27.2, 28.6, 30.2,
+    31.9, 33.6, 35.2, 36.8, 38.6, 40.3, 42.1
+  ],
   /**
    * Returns indoor constants array dimension
    *
@@ -2650,7 +2666,6 @@ var AeroflexCalc = {
       const B = Math.pow(2.71828, LnB)
 
       const insulationDepth = (diameterOut / 1000) * (B - 1) / 2
-      console.log({ k, insulationDepth })
       if (k > insulationDepth) {
         return insulationDepth * 1000
       }
@@ -2754,7 +2769,6 @@ var AeroflexCalc = {
       let xCur = startValue + topIndex * step;
       let xPrev = startValue + bottomIndex * step;
 
-      console.log( {curXlnx, prevXlnx, xCur, xPrev, xlnX} )
       X = this.getXWithInterpolation(curXlnx, prevXlnx, xCur, xPrev, xlnX);
 
       return Number(X.toFixed(4))
@@ -2762,7 +2776,6 @@ var AeroflexCalc = {
     
     const X = getX();
 
-    console.log({ xlnX, X, diameterOut })
     const depth = ((diameterOut / 1000) * (X - 1)) / 2
 
 
@@ -2779,12 +2792,127 @@ var AeroflexCalc = {
     return 2 * (widthMeter * heightMeter) / (widthMeter + heightMeter);
   },
 
-  getGasDewPointTemperature: function (gasMovingTemperature, temperatureOut, gasMovingHumidity) {
+  getGasDewPointTemperature: function (gasMovingTemperature, gasMovingHumidity) {
     
-    const top = 237.7 * (17.27 * gasMovingTemperature / (237.7 + temperatureOut + Math.log(gasMovingHumidity / 100))) 
-    const bottom = (17.27 - ((17.27 * gasMovingTemperature) / (237.7 * gasMovingTemperature + Math.log(gasMovingHumidity / 100)))) 
+    const humidity = gasMovingHumidity / 100
+    const humidityLn = Math.log(humidity)
+
+    const low = 17.27 * gasMovingTemperature
+    const high = 237.7 + gasMovingTemperature
+
+    const top = 237.7 * (low / high + humidityLn)
+    const bottom = 17.27 - (low / high + humidityLn)
 
     return (top / bottom).toFixed(4)
+  },
+
+  getGasProperties: function (temperatureOut) {
+
+    let index;
+    let prevIndex;
+    let prevGasTemperature;
+    let curGasTemperature;
+
+    for (let i = 0; i <= this.gasTemperatures.length - 1; i++) {
+      curGasTemperature = this.gasTemperatures[i]
+
+      if (temperatureOut <= -50) {
+        index = 0;
+        break;
+      }
+
+      if (temperatureOut >= 150) {
+        index = this.gasTemperatures.length - 1
+        break;
+      }
+
+      if (temperatureOut === curGasTemperature) {
+        index = i;
+        break;
+      }
+
+      if (temperatureOut < curGasTemperature) {
+        index = i;
+        prevIndex = i - 1;
+        prevGasTemperature = this.gasTemperatures[i - 1];
+        break;
+      }
+    }
+
+  
+    if (prevIndex === undefined) {
+      return { 
+        gasThermalConductivity: Number(this.gasThermalConductivity[index].toFixed(4)),
+        gasKinematicViscosity: Number(this.gasKinematicViscosity[index].toFixed(4)),
+        gasThermalDiffusivity: Number(this.gasThermalDiffusivity[index].toFixed(4))
+      }                  
+    }
+    
+    let curGasThermalConductivity = this.gasThermalConductivity[index];
+    let prevGasThermalConductivity = this.gasThermalConductivity[prevIndex];
+    let curGasKinematicViscosity = this.gasKinematicViscosity[index];
+    let prevGasKinematicViscosity = this.gasKinematicViscosity[prevIndex];
+    let curGasThermalDiffusivity = this.gasThermalDiffusivity[index];
+    let prevGasThermalDiffusivity = this.gasThermalDiffusivity[prevIndex];
+
+    return { 
+      gasThermalConductivity: Number(this.getXWithInterpolation(curGasTemperature, prevGasTemperature, curGasThermalConductivity, prevGasThermalConductivity, temperatureOut).toFixed(4)),
+      gasKinematicViscosity: Number(this.getXWithInterpolation(curGasTemperature, prevGasTemperature, curGasKinematicViscosity, prevGasKinematicViscosity, temperatureOut).toFixed(4)),
+      gasThermalDiffusivity: Number(this.getXWithInterpolation(curGasTemperature, prevGasTemperature, curGasThermalDiffusivity, prevGasThermalDiffusivity, temperatureOut).toFixed(4))
+    } 
+  },
+
+  getAlphaBetaN: function (gasMovingTemperature, diameterIn, gasSpeed) {
+    const { 
+      gasThermalConductivity, 
+      gasKinematicViscosity, 
+      gasThermalDiffusivity 
+    } = this.getGasProperties(gasMovingTemperature);
+
+    const diameterInMeter = diameterIn / 1000;
+    const gasThermalDiffusivityProcessed = gasThermalDiffusivity  / 1000000;
+    const gasKinematicViscosityProcessed = gasKinematicViscosity / 1000000;
+
+    const a = Math.pow(((gasSpeed * diameterInMeter)/ gasKinematicViscosityProcessed), 0.8)
+    const b = Math.pow((gasKinematicViscosityProcessed / gasThermalDiffusivityProcessed), 0.43)
+
+    return Number((gasThermalConductivity * 0.021 * a * (b /  diameterInMeter)).toFixed(4))
+  },
+  
+  getGasPipeDiameterWithInsulation: function (insulationWidth, diameterOut) {
+    console.log('diameter With insuation ', 2 * insulationWidth + diameterOut)
+    return 2 * insulationWidth + diameterOut
+  },
+
+  getGasPipeInsulationWidth: function (gasMovingTemperature, gasMovingHumidity, material, temperatureOut, diameterIn, diameterOut, gasSpeed, emission) {
+
+    const calculatedWallTemperature = 2 + +(this.getGasDewPointTemperature(gasMovingTemperature, gasMovingHumidity));
+
+    const thermalConductivity = +(this.getThermalConductivityByMaterial(material, gasMovingTemperature, temperatureOut).toFixed(4));
+
+    const alphaBetaN = +(this.getAlphaBetaN(gasMovingTemperature, diameterIn, gasSpeed));
+
+    const diameterInProcessed = diameterIn / 1000;
+
+    const additionalLossKoef = +(this.getThermalLossCoefficient(false, false, true, emission));
+    
+    let k = 0.001;
+
+    while(true) {
+      const LnB = 2 
+        * thermalConductivity
+        * (((calculatedWallTemperature - temperatureOut) / (alphaBetaN * diameterInProcessed * (gasMovingTemperature - calculatedWallTemperature))) 
+        - (1 / (additionalLossKoef * (this.getGasPipeDiameterWithInsulation(k, diameterOut / 1000)))))
+
+      const B = Math.pow(2.71828, LnB);
+
+      const insulationDepth = (diameterOut / 1000) * (B - 1) / 2
+        if (k > insulationDepth) {
+          return insulationDepth * 1000
+        }
+
+      k += 0.00001
+    }
   }
 
 };

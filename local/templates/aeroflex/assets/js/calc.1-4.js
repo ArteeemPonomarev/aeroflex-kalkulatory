@@ -83,7 +83,7 @@ $(function() {
       const $gasPipeHeightRow = $calc.find('.gas-pipe-height');
       const $rectangularPipeDiameterOutRow = $calc.find('.rectangular-pipe-diameter-out');
       const $rectangularPipeDiameterInRow = $calc.find('.rectangular-pipe-diameter-in');
-
+      const $gasPipeDepth = $calc.find('[name="gas-pipe-depth"]');
 
 
       if ($(this).val() === 'rectangular') {
@@ -98,7 +98,13 @@ $(function() {
 
         $rectangularPipeDiameterOutRow.removeClass('hidden');
         $rectangularPipeDiameterInRow.removeClass('hidden');
+
+        $gasPipeDepth.prop('disabled', false);
+        $gasPipeDepth.prop('readonly', false);
       } else {
+        $gasPipeDepth.prop('disabled', true);
+        $gasPipeDepth.prop('readonly', true);
+
         $diameterInRow.removeClass('hidden');
         $diameterOutRow.removeClass('hidden');
         $pipeTypeRow.removeClass('hidden');
@@ -114,33 +120,109 @@ $(function() {
       }
   });
 
-  
-  $('.temperature_out').on('change', function () {
+  $('[name="coolant-type"]').on('change', function () {
+    const $calc = $('.calc');
+    
+    if ($(this).val() === 'air') {
+      $calc.find('[name="gas-thermal-diffusivity"], [name="gas-kinematic-viscosity"], [name="gas-thermal-conductivity"]').prop('readonly', true);
+      $calc.find('[name="gas-thermal-diffusivity"], [name="gas-kinematic-viscosity"], [name="gas-thermal-conductivity"]').prop('disabled', true);
+    } else {
+      $calc.find('[name="gas-thermal-diffusivity"], [name="gas-kinematic-viscosity"], [name="gas-thermal-conductivity"]').prop('readonly', false);
+      $calc.find('[name="gas-thermal-diffusivity"], [name="gas-kinematic-viscosity"], [name="gas-thermal-conductivity"]').prop('disabled', false);
+    }
+  });
+
+  $('[name="gas-moving-temperature"]').on('change', function() {
     const $calc = $('.calc');
     const $gasMovingHumidity = $calc.find('[name="gas-moving-humidity"]');
-    const $gasMovingTemperature = $calc.find('[name="gas-moving-temperature"]');
-
-    if ($(this).val() && $humidityOut.val()) {
-
-      $calc.find('[name="dew-point-temperature"]').val(AeroflexCalc.getGasDewPointTemperature(+$gasMovingTemperature.val() , +$(this).val(), +$gasMovingHumidity.val()))
+  
+    if ($(this).val() && $gasMovingHumidity.val()) {
+      $calc.find('[name="dew-point-temperature"]').val(AeroflexCalc.getGasDewPointTemperature(parseFloat($(this).val().replace(/,/, '.')), +$gasMovingHumidity.val()));
     } else {
       $calc.find('[name="dew-point-temperature"]').val('');
     }
   });
 
-   $('[name="gas-pipe-width"]').on('change', function () {
+  
+  $('[name="gas-moving-temperature"]').on('change', function () {
+    const $calc = $('.calc');
+
+    const $coolantType = $calc.find('[name="coolant-type"]:checked');
+    const $gasMovingHumidity = $calc.find('[name="gas-moving-humidity"]');
+    const $gasMovingTemperature = $calc.find('[name="gas-moving-temperature"]');
+
+    const $gasThermalConductivity = $calc.find('[name="gas-thermal-conductivity"]');
+    const $gasKinematicViscosity = $calc.find('[name="gas-kinematic-viscosity"]');
+    const $gasThermalDiffusivity = $calc.find('[name="gas-thermal-diffusivity"]');
+
+    if ($(this).val() && $coolantType.val() === 'air') {
+      const {
+        gasThermalConductivity,
+        gasKinematicViscosity,
+        gasThermalDiffusivity
+      } = AeroflexCalc.getGasProperties(parseFloat($(this).val().replace(/,/, '.')));
+
+      $gasThermalConductivity.val(gasThermalConductivity);
+      $gasKinematicViscosity.val(gasKinematicViscosity);
+      $gasThermalDiffusivity.val(gasThermalDiffusivity);
+    }
+  });
+
+  $('[name="gas-pipe-width"]').on('change', function () {
     const $calc = $('.calc');
     const $gasPipeHeight = $calc.find('[name="gas-pipe-height"]');
+    const $gasPipeOuterDiameter = $calc.find('[name="gas-pipe-outer-diameter"]');
 
     if($(this).val() && $gasPipeHeight.val()) {
-      $calc.find()
-    }
-   });
+      const diameterOuter = AeroflexCalc.getRectangularPipeDiameter(parseFloat($(this).val().replace(/,/, '.')), parseFloat($gasPipeHeight.val().replace(/,/, '.')))
+      $gasPipeOuterDiameter.val(diameterOuter.toFixed(3))
+    } 
 
-   $('[name="gas-pipe-height"]').on('change', function () {
+    if (!$(this).val()) {
+      $gasPipeOuterDiameter.val('')
+    }
+  });
+
+  $('[name="gas-pipe-height"]').on('change', function () {
     const $calc = $('.calc');
     const $gasPipeWidth = $calc.find('[name="gas-pipe-width"]');
+    const $gasPipeOuterDiameter = $calc.find('[name="gas-pipe-outer-diameter"]');
 
+    if($(this).val() && $gasPipeWidth.val()) {
+      const diameterOuter = AeroflexCalc.getRectangularPipeDiameter(parseFloat($gasPipeWidth.val().replace(/,/, '.')), parseFloat($(this).val().replace(/,/, '.'))) * 1000
+      $gasPipeOuterDiameter.val(diameterOuter.toFixed(0))
+    } 
+
+    if (!$(this).val()) {
+      $gasPipeOuterDiameter.val('')
+    }
+  });
+
+  $('[name="gas-pipe-outer-diameter"]').on('change', function () {
+    const $calc = $('.calc');
+  });
+
+  $('[name="gas-pipe-depth"]').on('change', function () {
+    const $calc = $('.calc');
+    const $gasType = $calc.find('[name="gas-pipe-type"]:checked');
+
+    if ($gasType.val() === 'rectangular') {
+      const $gasPipeHeight = $calc.find('[name="gas-pipe-height"]');
+      const $gasPipeWidth = $calc.find('[name="gas-pipe-width"]');
+      const $innerDiameter = $calc.find('[name="gas-pipe-inner-diameter"]');
+     
+      if($(this).val() && $gasPipeHeight.val() && $gasPipeWidth.val()) {
+        const diameterOuter = AeroflexCalc.getRectangularPipeDiameter(parseFloat($gasPipeWidth.val().replace(/,/, '.')), parseFloat($gasPipeHeight.val().replace(/,/, '.'))) * 1000
+        const width = parseFloat($(this).val().replace(/,/, '.'));
+        const diameterInner = diameterOuter.toFixed(0) - 2 * width;
+  
+        $innerDiameter.val(diameterInner)
+      }
+  
+      if(!$(this).val()) {
+        $innerDiameter.val('');
+      }
+    }
    });
 
   $('[name="gas-moving-humidity"]').on('change', function () {
@@ -148,8 +230,8 @@ $(function() {
     const $temperatureOut = $calc.find('.temperature_out');
     const $gasMovingTemperature = $calc.find('[name="gas-moving-temperature"]');
 
-    if ($(this).val() && $temperatureOut.val() && $gasMovingTemperature.val()) {
-      $calc.find('[name="dew-point-temperature"]').val(AeroflexCalc.getGasDewPointTemperature(+$gasMovingTemperature.val() , +$temperatureOut.val(), +$(this).val()))
+    if ($(this).val() && $gasMovingTemperature.val()) {
+      $calc.find('[name="dew-point-temperature"]').val(AeroflexCalc.getGasDewPointTemperature(+$gasMovingTemperature.val() , +$(this).val()))
     } else {
       $calc.find('[name="dew-point-temperature"]').val('');
     }
@@ -170,8 +252,8 @@ $(function() {
           $pipe = $calc.find('[name="pipe"] option:selected'),
           $result = $calc.find('.calc__result'),
           $approx = $calc.find('.approx'),
-
-
+          $diameterIn = $calc.find('[name="diameter_in"]'),
+          $diameterOut = $calc.find('[name="diameter_out"]'),
           //газ 
           $gasPipeType = $calc.find('[name="gas-pipe-type"]:checked'), // вид газохода
           $gasPipeWidth = $calc.find('[name="gas-pipe-width"]'), // ширина газохода
@@ -201,17 +283,21 @@ $(function() {
       // Main
       const
           material = parseInt($material.val(), 10),
-          diameterIn = parseFloat($diameter_in.val().replace(/,/, '.')),
-          diameterOut = parseFloat($diameter_out.val().replace(/,/, '.')),
-          temperatureIn = parseFloat($temperatureIn.val().replace(/,/, '.')),
+          diameterIn = parseFloat($diameterIn.val().replace(/,/, '.')),
+          diameterOut = parseFloat($diameterOut.val().replace(/,/, '.')),
           temperatureOut = parseFloat($temperatureOut.val().replace(/,/, '.')),
-          humidityOut = parseFloat($humidityOut.val().replace(/,/, '.')),
-          dewPointTemperature = parseFloat($dewPointTemperature.val().replace(/,/, '.'))
+          gasMovingTemperature = parseFloat($gasMovingTemperature.val().replace(/,/, '.')),
+          dewPointTemperature = parseFloat($dewPointTemperature.val().replace(/,/, '.')),
+          gasSpeed = parseFloat($gasSpeed.val().replace(/,/, '.')),
+          gasMovingHumidity = parseFloat($gasMovingHumidity.val().replace(/,/, '.')),
+          gasPipeOuterDiameter = parseFloat($gasPipeOuterDiameter.val().replace(/,/, '.')),
+          gasPipeInnerDiameter = parseFloat($gasPipeInnerDiameter.val().replace(/,/, '.')),
           emission = parseInt($pipe.val(), 10);
 
       AeroflexCalc.init();
+      console.log( AeroflexCalc.getThermalLossCoefficient(false, false, true, emission));
       $heat_coefficient.attr('placeholder', AeroflexCalc.getThermalLossCoefficient(false, false, true, emission));
-
+      $heatTransferCoefficient.val(AeroflexCalc.getAlphaBetaN(gasMovingTemperature, diameterIn, gasSpeed));
       // Extended
       const
           heat_coefficient = parseFloat($heat_coefficient.val().replace(/,/, '.'));
@@ -225,8 +311,12 @@ $(function() {
 
 
       if (!$calc.find('.error').length && typeof AeroflexCalc !== 'undefined') {
+
+        const diameterInRes = $gasPipeType.val() === 'rectangular' ? gasPipeOuterDiameter : diameterOut;
+        const diameterOutRes = $gasPipeType.val() === 'rectangular' ? gasPipeInnerDiameter : diameterIn;
+
         
-        let depth = AeroflexCalc.getInsulationWidthForCondensate(material, dewPointTemperature, emission, temperatureIn, temperatureOut, diameterOut);
+        let depth = AeroflexCalc.getGasPipeInsulationWidth(gasMovingTemperature, gasMovingHumidity, material, temperatureOut, diameterInRes, diameterOutRes, gasSpeed, emission);
           $result.addClass('active');
             
           $('.calc__result').addClass('active');
