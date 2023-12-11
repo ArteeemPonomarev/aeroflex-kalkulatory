@@ -2666,7 +2666,7 @@ var AeroflexCalc = {
       const B = Math.pow(2.71828, LnB)
 
       const insulationDepth = (diameterOut / 1000) * (B - 1) / 2
-      if (k > insulationDepth) {
+      if (k > insulationDepth || insulationDepth >= 0.200) {
         return insulationDepth * 1000
       }
 
