@@ -2863,6 +2863,7 @@ var AeroflexCalc = {
   },
 
   getAlphaBetaN: function (gasMovingTemperature, diameterIn, gasSpeed) {
+    console.log({gasMovingTemperature, diameterIn, gasSpeed})
     const { 
       gasThermalConductivity, 
       gasKinematicViscosity, 
@@ -2880,11 +2881,11 @@ var AeroflexCalc = {
   },
   
   getGasPipeDiameterWithInsulation: function (insulationWidth, diameterOut) {
-    console.log('diameter With insuation ', 2 * insulationWidth + diameterOut)
+    
     return 2 * insulationWidth + diameterOut
   },
 
-  getGasPipeInsulationWidth: function (gasMovingTemperature, gasMovingHumidity, material, temperatureOut, diameterIn, diameterOut, gasSpeed, emission) {
+  getGasPipeInsulationWidth: function (gasMovingTemperature, gasMovingHumidity, material, temperatureOut, diameterIn, diameterOut, gasSpeed, emission, isVertical, isIndoor) {
 
     const calculatedWallTemperature = 2 + +(this.getGasDewPointTemperature(gasMovingTemperature, gasMovingHumidity));
 
@@ -2894,7 +2895,7 @@ var AeroflexCalc = {
 
     const diameterInProcessed = diameterIn / 1000;
 
-    const additionalLossKoef = +(this.getThermalLossCoefficient(false, false, true, emission));
+    const additionalLossKoef = +(this.getThermalLossCoefficient(false, isVertical, isIndoor, emission));
     
     let k = 0.001;
 

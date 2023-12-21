@@ -137,7 +137,7 @@ $(function() {
           dewPointTemperature = parseFloat($dewPointTemperature.val().replace(/,/, '.')),
           pipe = parseFloat($pipe.val().replace(/,/, '.')), 
           emission = parseInt($pipe.val(), 10);
-        console.log(pipe)
+        
       AeroflexCalc.init();
 
       $heat_coefficient.attr('placeholder', pipe);

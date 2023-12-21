@@ -215,7 +215,7 @@ $(function() {
         const diameterOuter = AeroflexCalc.getRectangularPipeDiameter(parseFloat($gasPipeWidth.val().replace(/,/, '.')), parseFloat($gasPipeHeight.val().replace(/,/, '.'))) * 1000
         const width = parseFloat($(this).val().replace(/,/, '.'));
         const diameterInner = diameterOuter.toFixed(0) - 2 * width;
-  
+        
         $innerDiameter.val(diameterInner)
       }
   
@@ -252,6 +252,8 @@ $(function() {
           $pipe = $calc.find('[name="pipe"] option:selected'),
           $result = $calc.find('.calc__result'),
           $approx = $calc.find('.approx'),
+          $position = $calc.find('[name="position"]:checked'),
+          $indoor = $calc.find('[name="indoor"]:checked'),
           $diameterIn = $calc.find('[name="diameter_in"]'),
           $diameterOut = $calc.find('[name="diameter_out"]'),
           //газ 
@@ -283,10 +285,17 @@ $(function() {
       // Main
       const
           material = parseInt($material.val(), 10),
+          isIndoor = $indoor.val() === 'close',
+          isVertical = $position.val() === 'vertical',
           diameterIn = parseFloat($diameterIn.val().replace(/,/, '.')),
           diameterOut = parseFloat($diameterOut.val().replace(/,/, '.')),
           temperatureOut = parseFloat($temperatureOut.val().replace(/,/, '.')),
+          gasPipeHeight = parseFloat($gasPipeHeight.val().replace(/,/, '.')),
+          gasPipeWidth = parseFloat($gasPipeWidth.val().replace(/,/, '.')),
+          gasPipeDepth = parseFloat($gasPipeDepth.val().replace(/,/, '.')),
+
           gasMovingTemperature = parseFloat($gasMovingTemperature.val().replace(/,/, '.')),
+
           dewPointTemperature = parseFloat($dewPointTemperature.val().replace(/,/, '.')),
           gasSpeed = parseFloat($gasSpeed.val().replace(/,/, '.')),
           gasMovingHumidity = parseFloat($gasMovingHumidity.val().replace(/,/, '.')),
@@ -294,20 +303,70 @@ $(function() {
           gasPipeInnerDiameter = parseFloat($gasPipeInnerDiameter.val().replace(/,/, '.')),
           emission = parseInt($pipe.val(), 10);
 
+
+      if ($gasPipeType.val() === 'rectangular') {
+
+        if (isNaN(gasPipeHeight)) {
+          $gasPipeHeight.addClass('error');
+        }
+
+        if (isNaN(gasPipeWidth)) {
+          $gasPipeWidth.addClass('error');
+        }
+
+        if (isNaN(gasPipeDepth)) {
+          $gasPipeDepth.addClass('error');
+        }
+      }
+
+      if ($gasPipeType.val() === 'circle') {
+
+        if (isNaN(diameterIn)) {
+          $diameterIn.addClass('error');
+        }
+
+        if (isNaN(diameterOut)) {
+          $diameterOut.addClass('error');
+        }
+      }
+
+      if (isNaN(gasMovingTemperature)) {
+        $gasMovingTemperature.addClass('error');
+      }
+
+      if (isNaN(temperatureOut)) {
+        $temperatureOut.addClass('error');
+      } 
+
+      if (isNaN(gasMovingHumidity)) {
+        $gasMovingHumidity.addClass('error');
+      }
+
+      const errorMessage = () => {
+        if (gasMovingTemperature < temperatureOut) {
+          return `Температура вещества ниже температуры окружающего воздуха. Выполнение расчёта невозможно.`
+        }
+      }
+
+      if (errorMessage()) {
+        $temperatureOut.addClass('error');
+        $('.temperature_out_error').text(errorMessage());
+      }
+
       AeroflexCalc.init();
-      console.log( AeroflexCalc.getThermalLossCoefficient(false, false, true, emission));
-      $heat_coefficient.attr('placeholder', AeroflexCalc.getThermalLossCoefficient(false, false, true, emission));
-      $heatTransferCoefficient.val(AeroflexCalc.getAlphaBetaN(gasMovingTemperature, diameterIn, gasSpeed));
-      // Extended
-      const
-          heat_coefficient = parseFloat($heat_coefficient.val().replace(/,/, '.'));
-          //density = parseFloat($density.val().replace(/,/, '.'));
+
+      $heat_coefficient.attr('placeholder', AeroflexCalc.getThermalLossCoefficient(false, isVertical, isIndoor, emission));
+
+      const diameterInRes = $gasPipeType.val() === 'rectangular' ? gasPipeOuterDiameter : diameterOut;
+
+      $heatTransferCoefficient.val(AeroflexCalc.getAlphaBetaN(gasMovingTemperature, diameterInRes, gasSpeed));
+     
+      const heat_coefficient = parseFloat($heat_coefficient.val().replace(/,/, '.'));
+ 
 
       AeroflexCalc.init({
           heat_coefficient
       });
-
-      //$density.attr('placeholder', AeroflexCalc.getSurfaceHeatFlowDensity(diameterIn, temperatureIn, isIndoor, hours, isFlat, region).toFixed(4))
 
 
       if (!$calc.find('.error').length && typeof AeroflexCalc !== 'undefined') {
@@ -316,7 +375,7 @@ $(function() {
         const diameterOutRes = $gasPipeType.val() === 'rectangular' ? gasPipeInnerDiameter : diameterIn;
 
         
-        let depth = AeroflexCalc.getGasPipeInsulationWidth(gasMovingTemperature, gasMovingHumidity, material, temperatureOut, diameterInRes, diameterOutRes, gasSpeed, emission);
+        let depth = AeroflexCalc.getGasPipeInsulationWidth(gasMovingTemperature, gasMovingHumidity, material, temperatureOut, diameterInRes, diameterOutRes, gasSpeed, emission, isVertical, isIndoor);
           $result.addClass('active');
             
           $('.calc__result').addClass('active');
