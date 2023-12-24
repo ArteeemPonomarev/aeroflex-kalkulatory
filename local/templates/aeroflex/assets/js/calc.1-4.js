@@ -33,6 +33,128 @@ $(function() {
       $('#diameter').trigger('change');
   });
 
+  $('[name="region"]').on('change', function () {
+    const $calc = $('.calc');
+    const $indoor = $calc.find('[name="indoor"]:checked');
+
+    if ($indoor.val() === 'open') {
+        let heatTemperature = $("#region option:selected").data(
+            "heat-temperature"
+        );
+        if (typeof heatTemperature === "string") {
+            heatTemperature = Number(heatTemperature.replace(",", "."));
+        }
+        let coldTemperature = $("#region option:selected").data(
+            "cold-temperature"
+        );
+        if (typeof coldTemperature === "string") {
+            coldTemperature = Number(coldTemperature.replace(",", "."));
+        }
+
+        const $gasMovingTemperature = $calc.find('[name="gas-moving-temperature"]');
+        const gasMovingTemperature = Number($gasMovingTemperature.val().replace(",", "."));
+        const $temperatureOut = $calc.find('.temperature_out');
+        
+        if (isNaN(parseFloat($gasMovingTemperature.val()))) {
+          return;
+        }
+
+        if (gasMovingTemperature > 0) {
+          $temperatureOut.val(heatTemperature);
+        }
+
+        if (gasMovingTemperature <= 0) {
+          $temperatureOut.val(coldTemperature);
+        }
+    }
+  });
+
+  $('[name="indoor"]').on('change', function () {
+    const $calc = $('.calc');
+    const $indoor = $calc.find('[name="indoor"]:checked');
+    const $temperatureOut = $calc.find('.temperature_out');
+
+    let heatTemperature = $("#region option:selected").data(
+      "heat-temperature"
+    );
+    if (typeof heatTemperature === "string") {
+      heatTemperature = Number(heatTemperature.replace(",", "."));
+    }
+    let coldTemperature = $("#region option:selected").data(
+      "cold-temperature"
+    );
+    if (typeof coldTemperature === "string") {
+      coldTemperature = Number(coldTemperature.replace(",", "."));
+    }
+
+
+    if ($indoor.val() === 'open') {
+
+      $temperatureOut.prop('readonly', true);
+      $temperatureOut.prop('disabled', true);
+      
+      const $gasMovingTemperature = $calc.find('[name="gas-moving-temperature"]');
+      const gasMovingTemperature = Number($gasMovingTemperature.val().replace(",", "."));
+
+      if (isNaN(parseFloat($gasMovingTemperature.val()))) {
+        return;
+      }
+
+      if (gasMovingTemperature > 0) {
+          $temperatureOut.val(heatTemperature);
+        }
+
+      if (gasMovingTemperature <= 0) {
+        $temperatureOut.val(coldTemperature);
+      }
+
+      
+
+    } else {
+      $temperatureOut.val('20')
+      $temperatureOut.prop('readonly', false);
+      $temperatureOut.prop('disabled', false);
+    }
+  });
+
+  $('[name="gas-moving-temperature"]').on('change', function () {
+    const $calc = $('.calc');
+    const $indoor = $calc.find('[name="indoor"]:checked');
+    const $temperatureOut = $calc.find('.temperature_out');
+
+    const $gasMovingTemperature = $calc.find('[name="gas-moving-temperature"]');
+    const gasMovingTemperature = Number($gasMovingTemperature.val().replace(",", "."));
+
+    if (isNaN(parseFloat($gasMovingTemperature.val()))) {
+      return;
+    }
+
+    if ($indoor.val() === 'open') {
+
+      let heatTemperature = $("#region option:selected").data(
+        "heat-temperature"
+      );
+      if (typeof heatTemperature === "string") {
+        heatTemperature = Number(heatTemperature.replace(",", "."));
+      }
+      let coldTemperature = $("#region option:selected").data(
+        "cold-temperature"
+      );
+      if (typeof coldTemperature === "string") {
+        coldTemperature = Number(coldTemperature.replace(",", "."));
+      }
+
+      if (gasMovingTemperature > 0) {
+        $temperatureOut.val(heatTemperature);
+      }
+
+      if (gasMovingTemperature <= 0) {
+        $temperatureOut.val(coldTemperature);
+      }
+    }
+  });
+
+
   $('[name="diameter"]').on('change', function() {
     const $calc = $('.calc');
 
@@ -254,6 +376,7 @@ $(function() {
           $approx = $calc.find('.approx'),
           $position = $calc.find('[name="position"]:checked'),
           $indoor = $calc.find('[name="indoor"]:checked'),
+          $region = $calc.find('[name="region"] option:selected'),
           $diameterIn = $calc.find('[name="diameter_in"]'),
           $diameterOut = $calc.find('[name="diameter_out"]'),
           //газ 
