@@ -29,7 +29,7 @@ $(function() {
     const $indoor = $calc.find('[name="indoor"]:checked');
 
     if ($indoor.val() === 'open') {
-      $temperature = $calc.find('[name="region"] option:selected').data('temperature');
+      $temperature = $calc.find('[name="region"] option:selected').data('heat-temperature');
       
       $calc.find('.temperature_out').val($temperature);
       $calc.find('.temperature_out').prop('readonly', true);
@@ -39,7 +39,7 @@ $(function() {
   $('[name="indoor"]').on('change', function () {
     const $calc = $('.calc');
     const $indoor = $calc.find('[name="indoor"]:checked');
-    const $temperature = $calc.find('[name="region"] option:selected').data('temperature');
+    const $temperature = $calc.find('[name="region"] option:selected').data('heat-temperature');
     const $surfaceInsulationTemperature = $calc.find('.surface_insulation_temperature');
     const $pipe = $calc.find('[name="pipe"] option:selected').data('material'); // material or no-material
     
@@ -167,7 +167,7 @@ $(function() {
 
       $calc.find('.calc__result').removeClass('active');
 
-      if (isNaN(parseFloat($region.data('temperature')))) {
+      if (isNaN(parseFloat($region.data('heat-temperature')))) {
           $region_select.addClass('error');
       } else {
           $region_select.removeClass('error');
@@ -197,10 +197,6 @@ $(function() {
 
       $heat_coefficient.attr('placeholder', '');
 
-      if (isNaN(parseFloat($region.data('heat')))) {
-          $region.closest('.calc__select').addClass('error');
-          return;
-      }
 
       // Main
       const
@@ -212,7 +208,7 @@ $(function() {
           isIndoor = $indoor.val() === 'close',
           isFlat = $flat.val() === 'flat',
           isVertical = $position.val() === 'vertical',
-          region = $region.data('type'),
+          region = $region.data("heat-temperature"),
           emission = parseInt($pipe.val(), 10),
           surfaceInsulationTemperature = parseFloat($surfaceInsulationTemperature.val().replace(/,/, '.'));
       AeroflexCalc.init();
@@ -243,7 +239,6 @@ $(function() {
         }
       }
 
-      //$density.attr('placeholder', AeroflexCalc.getSurfaceHeatFlowDensity(diameterIn, temperatureIn, isIndoor, hours, isFlat, region).toFixed(4))
       if (!isFlat) {
         if (isNaN(diameterIn)) {
           $diameter_in.addClass('error');
