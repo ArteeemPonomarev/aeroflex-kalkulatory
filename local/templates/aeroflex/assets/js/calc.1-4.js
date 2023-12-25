@@ -60,11 +60,11 @@ $(function() {
         }
 
         if (gasMovingTemperature > 0) {
-          $temperatureOut.val(heatTemperature);
+          $temperatureOut.val(coldTemperature);
         }
 
         if (gasMovingTemperature <= 0) {
-          $temperatureOut.val(coldTemperature);
+          $temperatureOut.val(heatTemperature);
         }
     }
   });
@@ -89,10 +89,6 @@ $(function() {
 
 
     if ($indoor.val() === 'open') {
-
-      $temperatureOut.prop('readonly', true);
-      $temperatureOut.prop('disabled', true);
-      
       const $gasMovingTemperature = $calc.find('[name="gas-moving-temperature"]');
       const gasMovingTemperature = Number($gasMovingTemperature.val().replace(",", "."));
 
@@ -101,14 +97,14 @@ $(function() {
       }
 
       if (gasMovingTemperature > 0) {
-          $temperatureOut.val(heatTemperature);
+          $temperatureOut.val(coldTemperature);
+          $temperatureOut.prop('readonly', true);
+          $temperatureOut.prop('disabled', true);
         }
 
       if (gasMovingTemperature <= 0) {
-        $temperatureOut.val(coldTemperature);
+        $temperatureOut.val(heatTemperature);
       }
-
-      
 
     } else {
       $temperatureOut.val('20')
@@ -145,11 +141,15 @@ $(function() {
       }
 
       if (gasMovingTemperature > 0) {
-        $temperatureOut.val(heatTemperature);
+        $temperatureOut.val(coldTemperature);
+        $temperatureOut.prop('readonly', true);
+        $temperatureOut.prop('disabled', true);
       }
 
       if (gasMovingTemperature <= 0) {
-        $temperatureOut.val(coldTemperature);
+        $temperatureOut.val(heatTemperature);
+        $temperatureOut.prop('readonly', false);
+        $temperatureOut.prop('disabled', false);
       }
     }
   });
