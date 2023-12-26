@@ -2864,20 +2864,19 @@ var AeroflexCalc = {
   },
 
   getAlphaBetaN: function (gasMovingTemperature, diameterIn, gasSpeed) {
-    console.log({gasMovingTemperature, diameterIn, gasSpeed})
     const { 
       gasThermalConductivity, 
       gasKinematicViscosity, 
       gasThermalDiffusivity 
     } = this.getGasProperties(gasMovingTemperature);
-
+    
     const diameterInMeter = diameterIn / 1000;
     const gasThermalDiffusivityProcessed = gasThermalDiffusivity  / 1000000;
     const gasKinematicViscosityProcessed = gasKinematicViscosity / 1000000;
 
     const a = Math.pow(((gasSpeed * diameterInMeter)/ gasKinematicViscosityProcessed), 0.8)
     const b = Math.pow((gasKinematicViscosityProcessed / gasThermalDiffusivityProcessed), 0.43)
-
+    
     return Number((gasThermalConductivity * 0.021 * a * (b /  diameterInMeter)).toFixed(4))
   },
   
@@ -2891,9 +2890,9 @@ var AeroflexCalc = {
     const calculatedWallTemperature = 2 + +(this.getGasDewPointTemperature(gasMovingTemperature, gasMovingHumidity));
 
     const thermalConductivity = +(this.getThermalConductivityByMaterial(material, gasMovingTemperature, temperatureOut).toFixed(4));
-
+    
     const alphaBetaN = +(this.getAlphaBetaN(gasMovingTemperature, diameterIn, gasSpeed));
-
+    
     const diameterInProcessed = diameterIn / 1000;
 
     const additionalLossKoef = +(this.getThermalLossCoefficient(false, isVertical, isIndoor, emission));
@@ -2906,11 +2905,17 @@ var AeroflexCalc = {
         * (((calculatedWallTemperature - temperatureOut) / (alphaBetaN * diameterInProcessed * (gasMovingTemperature - calculatedWallTemperature))) 
         - (1 / (additionalLossKoef * (this.getGasPipeDiameterWithInsulation(k, diameterOut / 1000)))))
 
-      const B = Math.pow(2.71828, LnB);
+      const B = Math.pow(2.71, LnB);
 
       const insulationDepth = (diameterOut / 1000) * (B - 1) / 2
         if (k > insulationDepth) {
-          return insulationDepth * 1000
+          console.log({
+            LnB,
+            B,
+            'предполагаемая толщина': k,
+            'итоговая толщина': Math.ceil(insulationDepth * 1000)
+          })
+          return Math.ceil(insulationDepth * 1000)
         }
 
       k += 0.00001

@@ -465,6 +465,10 @@ $(function() {
         $gasMovingHumidity.addClass('error');
       }
 
+      if(isNaN(gasSpeed)) {
+        $gasSpeed.addClass('error');
+      };
+
       const errorMessage = () => {
         if (gasMovingTemperature < temperatureOut) {
           return `Температура вещества ниже температуры окружающего воздуха. Выполнение расчёта невозможно.`
@@ -480,7 +484,7 @@ $(function() {
 
       $heat_coefficient.attr('placeholder', AeroflexCalc.getThermalLossCoefficient(false, isVertical, isIndoor, emission));
 
-      const diameterInRes = $gasPipeType.val() === 'rectangular' ? gasPipeOuterDiameter : diameterOut;
+      const diameterInRes = $gasPipeType.val() === 'rectangular' ? gasPipeInnerDiameter : diameterIn;
 
       $heatTransferCoefficient.val(AeroflexCalc.getAlphaBetaN(gasMovingTemperature, diameterInRes, gasSpeed));
      
@@ -494,8 +498,8 @@ $(function() {
 
       if (!$calc.find('.error').length && typeof AeroflexCalc !== 'undefined') {
 
-        const diameterInRes = $gasPipeType.val() === 'rectangular' ? gasPipeOuterDiameter : diameterOut;
-        const diameterOutRes = $gasPipeType.val() === 'rectangular' ? gasPipeInnerDiameter : diameterIn;
+        const diameterInRes = $gasPipeType.val() === 'rectangular' ? gasPipeInnerDiameter : diameterIn;
+        const diameterOutRes = $gasPipeType.val() === 'rectangular' ? gasPipeOuterDiameter : diameterOut;
 
         
         let depth = AeroflexCalc.getGasPipeInsulationWidth(gasMovingTemperature, gasMovingHumidity, material, temperatureOut, diameterInRes, diameterOutRes, gasSpeed, emission, isVertical, isIndoor);
