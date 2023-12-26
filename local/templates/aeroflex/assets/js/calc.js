@@ -2652,7 +2652,7 @@ var AeroflexCalc = {
     coolantHeatCapacity, // Теплоемкость теплоносителя (вода ...)
     stopTime // время остановки
   ) {
-    let k = 0.0001
+    let k = 0.001
     
     const koef = +(this.getThermalConductivityByMaterial(material, startCarrierTemperature, temperatureOut).toFixed(4));
     
@@ -2663,11 +2663,12 @@ var AeroflexCalc = {
         * koef
         * (this.getFractionFirst((diameterOut / 1000), (pipeWidth / 1000), coolantDensity, coolantHeatCapacity, pipeMaterialDensity, materialHeatCapacity, temperatureOut, startCarrierTemperature, startCoolantFrostTemperature, permissibleIceContent, heatCoefficientAdditionsLosses, stopTime) - this.getFractionSecond(this.getThermalLossCoefficient(isFlat, isVertical, isIndoor, emission), k, diameterOut))
 
-      const B = Math.pow(2.71828, LnB)
+      const B = Math.pow(2.71, LnB)
 
       const insulationDepth = (diameterOut / 1000) * (B - 1) / 2
       if (k > insulationDepth || insulationDepth >= 0.200) {
-        return insulationDepth * 1000
+        
+        return Math.ceil(k * 1000)
       }
 
       k += 0.00001

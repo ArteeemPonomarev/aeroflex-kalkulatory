@@ -304,7 +304,7 @@ $(function() {
             ? 'По вопросам - calc@aeroflex-russia.ru' 
             : depth >= 200 
               ? 'Расчетная толщина тепловой превышает 200 мм'
-              : depth.toFixed(2)
+              : depth
           );
       }
   });
