@@ -2666,8 +2666,12 @@ var AeroflexCalc = {
       const B = Math.pow(2.71, LnB)
 
       const insulationDepth = (diameterOut / 1000) * (B - 1) / 2
-      if (k > insulationDepth || insulationDepth >= 0.200) {
-        
+
+      if (insulationDepth >= 0.200) {
+        return insulationDepth * 1000
+      }
+
+      if (k > insulationDepth) {
         return Math.ceil(k * 1000)
       }
 
@@ -2877,7 +2881,7 @@ var AeroflexCalc = {
     const a = Math.pow(((gasSpeed * diameterInMeter)/ gasKinematicViscosityProcessed), 0.8)
     const b = Math.pow((gasKinematicViscosityProcessed / gasThermalDiffusivityProcessed), 0.43)
     
-    return Number((gasThermalConductivity * 0.021 * a * (b /  diameterInMeter)).toFixed(4))
+    return Number((gasThermalConductivity * 0.021 * a * (b /  diameterInMeter)))
   },
   
   getGasPipeDiameterWithInsulation: function (insulationWidth, diameterOut) {

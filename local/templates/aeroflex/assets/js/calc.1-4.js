@@ -486,7 +486,7 @@ $(function() {
 
       const diameterInRes = $gasPipeType.val() === 'rectangular' ? gasPipeInnerDiameter : diameterIn;
 
-      $heatTransferCoefficient.val(AeroflexCalc.getAlphaBetaN(gasMovingTemperature, diameterInRes, gasSpeed));
+      $heatTransferCoefficient.val(AeroflexCalc.getAlphaBetaN(gasMovingTemperature, diameterInRes, gasSpeed).toFixed(4));
      
       const heat_coefficient = parseFloat($heat_coefficient.val().replace(/,/, '.'));
  
