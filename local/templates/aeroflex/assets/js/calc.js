@@ -2867,12 +2867,14 @@ var AeroflexCalc = {
     } 
   },
 
-  getAlphaBetaN: function (gasMovingTemperature, diameterIn, gasSpeed) {
-    const { 
-      gasThermalConductivity, 
-      gasKinematicViscosity, 
-      gasThermalDiffusivity 
-    } = this.getGasProperties(gasMovingTemperature);
+  getAlphaBetaN: function (
+    gasMovingTemperature, 
+    diameterIn, 
+    gasSpeed, 
+    gasThermalConductivity, 
+    gasKinematicViscosity, 
+    gasThermalDiffusivity ) {
+   
     
     const diameterInMeter = diameterIn / 1000;
     const gasThermalDiffusivityProcessed = gasThermalDiffusivity  / 1000000;
@@ -2880,7 +2882,13 @@ var AeroflexCalc = {
 
     const a = Math.pow(((gasSpeed * diameterInMeter)/ gasKinematicViscosityProcessed), 0.8)
     const b = Math.pow((gasKinematicViscosityProcessed / gasThermalDiffusivityProcessed), 0.43)
-    
+    console.log({ 
+      diameterInMeter,
+      gasThermalDiffusivityProcessed,
+      gasKinematicViscosityProcessed,
+      a,
+      b
+     })
     return Number((gasThermalConductivity * 0.021 * a * (b /  diameterInMeter)))
   },
   
@@ -2889,13 +2897,27 @@ var AeroflexCalc = {
     return 2 * insulationWidth + diameterOut
   },
 
-  getGasPipeInsulationWidth: function (gasMovingTemperature, gasMovingHumidity, material, temperatureOut, diameterIn, diameterOut, gasSpeed, emission, isVertical, isIndoor) {
+  getGasPipeInsulationWidth: function (
+    gasMovingTemperature, 
+    gasMovingHumidity,
+    material, 
+    temperatureOut, 
+    diameterIn, 
+    diameterOut, 
+    gasSpeed, 
+    emission, 
+    isVertical, 
+    isIndoor, 
+    gasThermalConductivity,
+    gasKinematicViscosity,
+    gasThermalDiffusivity
+    ) {
 
     const calculatedWallTemperature = 2 + +(this.getGasDewPointTemperature(gasMovingTemperature, gasMovingHumidity));
 
     const thermalConductivity = +(this.getThermalConductivityByMaterial(material, gasMovingTemperature, temperatureOut).toFixed(4));
     
-    const alphaBetaN = +(this.getAlphaBetaN(gasMovingTemperature, diameterIn, gasSpeed));
+    const alphaBetaN = +(this.getAlphaBetaN(gasMovingTemperature, diameterIn, gasSpeed, gasThermalConductivity, gasKinematicViscosity, gasThermalDiffusivity));
     
     const diameterInProcessed = diameterIn / 1000;
 
